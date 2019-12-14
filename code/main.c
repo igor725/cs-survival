@@ -164,8 +164,7 @@ COMMAND_FUNC(God) {
 	SurvHacks_Update(data);
 	SurvInv_UpdateInventory(data);
 	SurvGui_DrawBlockInfo(data, data->godMode ? 0 : Client_GetHeldBlock(ccdata->caller));
-	String_FormatBuf(ccdata->out, MAX_CMD_OUT, "God mode %s", MODE(data->godMode));
-	return true;
+	Command_Printf("God mode %s", MODE(data->godMode));
 }
 
 COMMAND_FUNC(Hurt) {
@@ -185,8 +184,7 @@ COMMAND_FUNC(PvP) {
 	}
 
 	data->pvpMode ^= 1;
-	String_FormatBuf(ccdata->out, MAX_CMD_OUT, "PvP mode %s", MODE(data->pvpMode));
-	return true;
+	Command_Printf("PvP mode %s", MODE(data->pvpMode));
 }
 
 Plugin_SetVersion(1)
