@@ -169,7 +169,7 @@ COMMAND_FUNC(God) {
 
 COMMAND_FUNC(Hurt) {
 	char damage[32];
-	if(String_GetArgument(ccdata->args, damage, 32, 0)) {
+	if(Command_GetArg(damage, 32, 0)){
 		cs_uint8 dmg = (cs_uint8)(String_ToFloat(damage) * 2);
 		SurvDmg_Hurt(SurvData_Get(ccdata->caller), NULL, dmg);
 	}
