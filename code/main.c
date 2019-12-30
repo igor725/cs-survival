@@ -7,6 +7,7 @@
 #include <command.h>
 #include <protocol.h>
 #include <server.h>
+#include <timer.h>
 
 #include "data.h"
 #include "damage.h"
@@ -71,11 +72,8 @@ static void Survival_OnTick(void* param) {
 	cs_int32 delta = *(cs_int32*)param;
 	for(ClientID i = 0; i < MAX_CLIENTS; i++) {
 		SurvivalData* data = SurvData_GetByID(i);
-		if(data) {
-			if(data->breakStarted)
-				SurvBrk_Tick(data, delta);
-			SurvDmg_Tick(data, delta);
-		}
+		if(data && data->breakStarted)
+			SurvBrk_Tick(data, delta);
 	}
 }
 
@@ -187,6 +185,36 @@ COMMAND_FUNC(PvP) {
 	Command_Printf("PvP mode %s", MODE(data->pvpMode));
 }
 
+TIMER_FUNC(FluidTester) {
+	(void)left; (void)ticks; (void)ud;
+	for(ClientID id = 0; id < MAX_CLIENTS; id++) {
+		Client* client = Clients_List[id];
+		if(!client || !Client_IsInGame(client)) continue;
+		SurvivalData* data = SurvData_Get(client);
+		cs_uint8 waterLevel = Client_GetFluidLevel(client);
+
+		if(data->showOxygen) {
+			if(waterLevel > 1) {
+				if(data->oxygen > 0)
+					data->oxygen--;
+				else
+					SurvDmg_Hurt(data, NULL, 2);
+			} else {
+				if(data->oxygen < 10)
+					data->oxygen++;
+			}
+			SurvGui_DrawAll(data);
+		}
+
+		if(waterLevel > 0)
+			data->showOxygen = true;
+		else if(data->oxygen == 10) {
+			data->showOxygen = false;
+			SurvGui_DrawAll(data);	
+		}
+	}
+}
+
 Plugin_SetVersion(1)
 
 cs_bool Plugin_Load(void) {
@@ -195,6 +223,7 @@ cs_bool Plugin_Load(void) {
 		return false;
 	}
 
+	Timer_Add(-1, 1000, FluidTester, NULL);
 	COMMAND_ADD(God, CMDF_OP | CMDF_CLIENT);
 	COMMAND_ADD(Hurt, CMDF_CLIENT);
 	COMMAND_ADD(PvP, CMDF_CLIENT);
