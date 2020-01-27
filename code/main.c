@@ -162,12 +162,12 @@ COMMAND_FUNC(God) {
 	SurvHacks_Update(data);
 	SurvInv_UpdateInventory(data);
 	SurvGui_DrawBlockInfo(data, data->godMode ? 0 : Client_GetHeldBlock(ccdata->caller));
-	Command_Printf("God mode %s", MODE(data->godMode));
+	COMMAND_PRINTF("God mode %s", MODE(data->godMode));
 }
 
 COMMAND_FUNC(Hurt) {
 	char damage[32];
-	if(Command_GetArg(damage, 32, 0)){
+	if(COMMAND_GETARG(damage, 32, 0)){
 		cs_uint8 dmg = (cs_uint8)(String_ToFloat(damage) * 2);
 		SurvDmg_Hurt(SurvData_Get(ccdata->caller), NULL, dmg);
 	}
@@ -178,11 +178,11 @@ COMMAND_FUNC(Hurt) {
 COMMAND_FUNC(PvP) {
 	SurvivalData* data = SurvData_Get(ccdata->caller);
 	if(data->godMode) {
-		Command_Print("This command can't be used from god mode.");
+		COMMAND_PRINT("This command can't be used from god mode.");
 	}
 
 	data->pvpMode ^= 1;
-	Command_Printf("PvP mode %s", MODE(data->pvpMode));
+	COMMAND_PRINTF("PvP mode %s", MODE(data->pvpMode));
 }
 
 TIMER_FUNC(FluidTester) {
@@ -210,7 +210,7 @@ TIMER_FUNC(FluidTester) {
 			data->showOxygen = true;
 		else if(data->oxygen == 10) {
 			data->showOxygen = false;
-			SurvGui_DrawAll(data);	
+			SurvGui_DrawAll(data);
 		}
 	}
 }
@@ -223,12 +223,12 @@ cs_bool Plugin_Load(void) {
 		return false;
 	}
 
-	Timer_Add(-1, 1000, FluidTester, NULL);
 	COMMAND_ADD(God, CMDF_OP | CMDF_CLIENT);
 	COMMAND_ADD(Hurt, CMDF_CLIENT);
 	COMMAND_ADD(PvP, CMDF_CLIENT);
 
 	SurvData_AssocType = Assoc_NewType();
+	Timer_Add(-1, 1000, FluidTester, NULL);
 	Event_RegisterVoid(EVT_ONTICK, Survival_OnTick);
 	Event_RegisterVoid(EVT_ONSPAWN, Survival_OnSpawn);
 	Event_RegisterVoid(EVT_ONHELDBLOCKCHNG, Survival_OnHeldChange);
