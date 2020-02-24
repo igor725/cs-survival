@@ -2,6 +2,7 @@
 #include <str.h>
 #include <log.h>
 #include <client.h>
+#include <csmath.h>
 #include <event.h>
 #include <block.h>
 #include <command.h>
@@ -81,21 +82,6 @@ static void Survival_OnDisconnect(void* param) {
 	SurvData_Free((Client*)param);
 }
 
-static double root(double n){
-  double lo = 0, hi = n, mid;
-  for(cs_int32 i = 0; i < 1000; i++){
-      mid = (lo + hi) / 2;
-      if(mid * mid == n) return mid;
-      if(mid * mid > n) hi = mid;
-      else lo = mid;
-  }
-  return mid;
-}
-
-static float distance(float x1, float y1, float z1, float x2, float y2, float z2) {
-	return (float)root((x2 * x2 - x1 * x1) + (y2 * y2 - y1 * y1) + (z2 * z2 - z1 * z1));
-}
-
 static void Survival_OnClick(void* param) {
 	onPlayerClick* a = param;
 	if(a->button != 0) return;
@@ -109,7 +95,7 @@ static void Survival_OnClick(void* param) {
 		return;
 	}
 
-	SVec* pos = a->pos;
+	SVec* blockPos = a->pos;
 	Client* target = Client_GetByID(a->tgid);
 	SurvivalData* dataTg = NULL;
 	if(target) dataTg = SurvData_Get(target);
@@ -118,28 +104,37 @@ static void Survival_OnClick(void* param) {
 	float dist_block = 32768.0f;
 
 	PlayerData* pd = client->playerData;
-	Vec* pv = &pd->position;
+	Vec kb = {0, 0, 0};
 
-	if(!Vec_IsInvalid(pos)) {
-		dist_block = distance(pos->x + .5f, pos->y + .5f, pos->z + .5f, pv->x, pv->y, pv->z);
+	if(!Vec_IsInvalid(blockPos)) {
+		Vec blockcenter;
+		blockcenter.x = blockPos->x + .5f;
+		blockcenter.y = blockPos->y + .5f;
+		blockcenter.z = blockPos->z + .5f;
+		dist_block = Math_Distance(&blockcenter, &pd->position);
 	}
 
 	if(target) {
-		Vec* pvt = &target->playerData->position;
-		dist_entity = distance(pvt->x, pvt->y + 1.59375f, pvt->z, pv->x, pv->y, pv->z);
+		Vec tgcampos = target->playerData->position;
+		kb = pd->position;
+		kb.x = -(kb.x - tgcampos.x) * 500.0f;
+		kb.y = -(kb.y - tgcampos.y) * 500.0f;
+		kb.z = -(kb.z - tgcampos.z) * 500.0f;
+		tgcampos.y += 1.59375f;
+		dist_entity = Math_Distance(&tgcampos, &pd->position);
 	}
 
-	if(data->breakStarted && !SVec_Compare(&data->lastClick, pos)) {
+	if(data->breakStarted && !SVec_Compare(&data->lastClick, blockPos)) {
 		SurvBrk_Stop(data);
 		return;
 	}
 
-	if(dist_block < dist_entity) {
+	if(dist_block < dist_entity && dist_block < 4) {
 		if(!data->breakStarted) {
-			BlockID bid = World_GetBlock(pd->world, pos);
+			BlockID bid = World_GetBlock(pd->world, blockPos);
 			if(bid > BLOCK_AIR) SurvBrk_Start(data, bid);
 		}
-		data->lastClick = *pos;
+		data->lastClick = *blockPos;
 	} else if(dist_entity < dist_block && dist_entity < 3.5) {
 		if(data->breakStarted) {
 			SurvBrk_Stop(data);
@@ -147,7 +142,7 @@ static void Survival_OnClick(void* param) {
 		}
 		if(data->pvpMode && dataTg->pvpMode) {
 			SurvDmg_Hurt(dataTg, data, 1);
-			// TODO: Knockback
+			Client_SetVelocity(target, &kb, true);
 		} else {
 			if(!data->pvpMode)
 				Client_Chat(client, 0, "Enable pvp mode (/pvp) first.");
