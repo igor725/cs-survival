@@ -115,13 +115,15 @@ static void Survival_OnClick(void* param) {
 	}
 
 	if(target) {
-		Vec tgcampos = target->playerData->position;
+		Vec tgcampos = target->playerData->position,
+		plcampos = pd->position;
 		kb = pd->position;
 		kb.x = -(kb.x - tgcampos.x) * 500.0f;
 		kb.y = -(kb.y - tgcampos.y) * 500.0f;
 		kb.z = -(kb.z - tgcampos.z) * 500.0f;
 		tgcampos.y += 1.59375f;
-		dist_entity = Math_Distance(&tgcampos, &pd->position);
+		plcampos.y += 1.59375f;
+		dist_entity = Math_Distance(&tgcampos, &plcampos);
 	}
 
 	if(data->breakStarted && !SVec_Compare(&data->lastClick, blockPos)) {
