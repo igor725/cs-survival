@@ -17,8 +17,8 @@
 #include "break.h"
 #include "inventory.h"
 
-static void Survival_OnHandshake(void* param) {
-	Client* client = param;
+static void Survival_OnHandshake(void *param) {
+	Client *client = param;
 	if(!Client_GetExtVer(client, EXT_HACKCTRL) ||
 	!Client_GetExtVer(client, EXT_MESSAGETYPE) ||
 	!Client_GetExtVer(client, EXT_PLAYERCLICK) ||
@@ -29,17 +29,17 @@ static void Survival_OnHandshake(void* param) {
 	SurvData_Create(client);
 }
 
-static void Survival_OnSpawn(void* param) {
-	SurvivalData* data = SurvData_Get((Client*)param);
+static void Survival_OnSpawn(void *param) {
+	SurvivalData *data = SurvData_Get((Client *)param);
 	SurvGui_DrawAll(data);
 	SurvHacks_Update(data);
 	SurvInv_Init(data);
 }
 
-static cs_bool Survival_OnBlockPlace(void* param) {
-	onBlockPlace* a = param;
-	Client* client = a->client;
-	SurvivalData* data = SurvData_Get(client);
+static cs_bool Survival_OnBlockPlace(void *param) {
+	onBlockPlace *a = param;
+	Client *client = a->client;
+	SurvivalData *data = SurvData_Get(client);
 	if(data->godMode) return true;
 
 	cs_uint8 mode = a->mode;
@@ -62,32 +62,32 @@ static cs_bool Survival_OnBlockPlace(void* param) {
 	return false;
 }
 
-static void Survival_OnHeldChange(void* param) {
-	onHeldBlockChange* a = param;
-	SurvivalData* data = SurvData_Get(a->client);
+static void Survival_OnHeldChange(void *param) {
+	onHeldBlockChange *a = param;
+	SurvivalData *data = SurvData_Get(a->client);
 	if(!data->godMode)
 		SurvGui_DrawBlockInfo(data, a->curr);
 }
 
-static void Survival_OnTick(void* param) {
-	cs_int32 delta = *(cs_int32*)param;
+static void Survival_OnTick(void *param) {
+	cs_int32 delta = *(cs_int32 *)param;
 	for(ClientID i = 0; i < MAX_CLIENTS; i++) {
-		SurvivalData* data = SurvData_GetByID(i);
+		SurvivalData *data = SurvData_GetByID(i);
 		if(data && data->breakStarted)
 			SurvBrk_Tick(data, delta);
 	}
 }
 
-static void Survival_OnDisconnect(void* param) {
-	SurvData_Free((Client*)param);
+static void Survival_OnDisconnect(void *param) {
+	SurvData_Free((Client *)param);
 }
 
-static void Survival_OnClick(void* param) {
-	onPlayerClick* a = param;
+static void Survival_OnClick(void *param) {
+	onPlayerClick *a = param;
 	if(a->button != 0) return;
 
-	Client* client = a->client;
-	SurvivalData* data = SurvData_Get(client);
+	Client *client = a->client;
+	SurvivalData *data = SurvData_Get(client);
 	if(data->godMode) return;
 
 	if(a->action == 1) {
@@ -95,15 +95,15 @@ static void Survival_OnClick(void* param) {
 		return;
 	}
 
-	SVec* blockPos = a->pos;
-	Client* target = Client_GetByID(a->tgid);
-	SurvivalData* dataTg = NULL;
+	SVec *blockPos = a->pos;
+	Client *target = Client_GetByID(a->tgid);
+	SurvivalData *dataTg = NULL;
 	if(target) dataTg = SurvData_Get(target);
 
 	float dist_entity = 32768.0f;
 	float dist_block = 32768.0f;
 
-	PlayerData* pd = client->playerData;
+	PlayerData *pd = client->playerData;
 	Vec kb = {0, 0, 0};
 
 	if(!Vec_IsInvalid(blockPos)) {
@@ -153,7 +153,7 @@ static void Survival_OnClick(void* param) {
 }
 
 COMMAND_FUNC(God) {
-	SurvivalData* data = SurvData_Get(ccdata->caller);
+	SurvivalData *data = SurvData_Get(ccdata->caller);
 	data->godMode ^= 1;
 	SurvGui_DrawAll(data);
 	SurvHacks_Update(data);
@@ -173,7 +173,7 @@ COMMAND_FUNC(Hurt) {
 }
 
 COMMAND_FUNC(PvP) {
-	SurvivalData* data = SurvData_Get(ccdata->caller);
+	SurvivalData *data = SurvData_Get(ccdata->caller);
 	if(data->godMode) {
 		COMMAND_PRINT("This command can't be used from god mode.");
 	}
@@ -185,9 +185,9 @@ COMMAND_FUNC(PvP) {
 TIMER_FUNC(FluidTester) {
 	(void)left; (void)ticks; (void)ud;
 	for(ClientID id = 0; id < MAX_CLIENTS; id++) {
-		Client* client = Clients_List[id];
+		Client *client = Clients_List[id];
 		if(!client || !Client_IsInGame(client)) continue;
-		SurvivalData* data = SurvData_Get(client);
+		SurvivalData *data = SurvData_Get(client);
 		cs_uint8 waterLevel = Client_GetFluidLevel(client);
 
 		if(data->showOxygen) {

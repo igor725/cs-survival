@@ -3,7 +3,7 @@
 cs_uint16 SurvData_AssocType;
 
 typedef struct {
-	Client* client;
+	Client *client;
 	cs_uint16 inventory[256];
 	SVec lastClick;
 	cs_uint8 health, oxygen;
@@ -14,8 +14,8 @@ typedef struct {
 	BlockID breakBlock;
 } SurvivalData;
 
-void SurvData_Create(Client* client);
-void SurvData_Free(Client* client);
-SurvivalData* SurvData_Get(Client* client);
-SurvivalData* SurvData_GetByID(ClientID id);
+void SurvData_Create(Client *client);
+void SurvData_Free(Client *client);
+SurvivalData *SurvData_Get(Client *client);
+SurvivalData *SurvData_GetByID(ClientID id);
 #endif // SURV_DATA_H

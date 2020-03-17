@@ -6,8 +6,8 @@
 #include "inventory.h"
 #include "gui.h"
 
-void SurvInv_Init(SurvivalData* data) {
-	Client* client = data->client;
+void SurvInv_Init(SurvivalData *data) {
+	Client *client = data->client;
 
 	SurvInv_UpdateInventory(data);
 	for(Order i = 0; i < 9; i++) {
@@ -15,10 +15,10 @@ void SurvInv_Init(SurvivalData* data) {
 	}
 }
 
-void SurvInv_UpdateInventory(SurvivalData* data) {
+void SurvInv_UpdateInventory(SurvivalData *data) {
 	Order invIdx = 0;
-	Client* client = data->client;
-	cs_uint16* inv = data->inventory;
+	Client *client = data->client;
+	cs_uint16 *inv = data->inventory;
 
 	for(BlockID i = 1; i < 255; i++) {
 		cs_bool mz = inv[i] > 0 || data->godMode;
@@ -30,8 +30,8 @@ void SurvInv_UpdateInventory(SurvivalData* data) {
 	}
 }
 
-cs_uint16 SurvInv_Add(SurvivalData* data, BlockID id, cs_uint16 count) {
-	cs_uint16* inv = data->inventory;
+cs_uint16 SurvInv_Add(SurvivalData *data, BlockID id, cs_uint16 count) {
+	cs_uint16 *inv = data->inventory;
 	cs_uint16 old = inv[id];
 
 	if(old < SURV_MAX_BLOCKS) {
@@ -44,12 +44,12 @@ cs_uint16 SurvInv_Add(SurvivalData* data, BlockID id, cs_uint16 count) {
 	return 0;
 }
 
-cs_uint16 SurvInv_Get(SurvivalData* data, BlockID id) {
+cs_uint16 SurvInv_Get(SurvivalData *data, BlockID id) {
 	return data->inventory[id];
 }
 
-cs_uint16 SurvInv_Take(SurvivalData* data, BlockID id, cs_uint16 count) {
-	cs_uint16* inv = data->inventory;
+cs_uint16 SurvInv_Take(SurvivalData *data, BlockID id, cs_uint16 count) {
+	cs_uint16 *inv = data->inventory;
 	cs_uint16 old = inv[id];
 
 	if(old > 0) {

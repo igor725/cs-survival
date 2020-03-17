@@ -4,8 +4,8 @@
 #include "data.h"
 #include "hacks.h"
 
-void SurvHacks_Update(SurvivalData* data) {
-	Client* client = data->client;
+void SurvHacks_Update(SurvivalData *data) {
+	Client *client = data->client;
 	CPEHacks hacks;
 
 	hacks.tpv = true;
