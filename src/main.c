@@ -18,7 +18,7 @@
 #include "inventory.h"
 
 static void Survival_OnHandshake(void *param) {
-	Client *client = param;
+	Client *client = (Client *)param;
 	if(!Client_GetExtVer(client, EXT_HACKCTRL) ||
 	!Client_GetExtVer(client, EXT_MESSAGETYPE) ||
 	!Client_GetExtVer(client, EXT_PLAYERCLICK) ||
@@ -37,7 +37,7 @@ static void Survival_OnSpawn(void *param) {
 }
 
 static cs_bool Survival_OnBlockPlace(void *param) {
-	onBlockPlace *a = param;
+	onBlockPlace *a = (onBlockPlace *)param;
 	Client *client = a->client;
 	SurvivalData *data = SurvData_Get(client);
 	if(data->godMode) return true;
@@ -63,7 +63,7 @@ static cs_bool Survival_OnBlockPlace(void *param) {
 }
 
 static void Survival_OnHeldChange(void *param) {
-	onHeldBlockChange *a = param;
+	onHeldBlockChange *a = (onHeldBlockChange *)param;
 	SurvivalData *data = SurvData_Get(a->client);
 	if(!data->godMode)
 		SurvGui_DrawBlockInfo(data, a->curr);
@@ -83,7 +83,7 @@ static void Survival_OnDisconnect(void *param) {
 }
 
 static void Survival_OnClick(void *param) {
-	onPlayerClick *a = param;
+	onPlayerClick *a = (onPlayerClick *)param;
 	if(a->button != 0) return;
 
 	Client *client = a->client;
@@ -104,7 +104,7 @@ static void Survival_OnClick(void *param) {
 	float dist_block = 32768.0f;
 
 	PlayerData *pd = client->playerData;
-	Vec kb = {0, 0, 0};
+	Vec kb;
 
 	if(!Vec_IsInvalid(blockPos)) {
 		Vec blockcenter;
