@@ -12,8 +12,8 @@ void SurvGui_DrawHealth(SurvivalData *data) {
 	char healthstr[20] = {0};
 
 	if(!data->godMode) {
-		cs_uint8 hltf = data->health / 2;
-		cs_uint8 empty = 10 - hltf;
+		cs_byte hltf = data->health / 2;
+		cs_byte empty = 10 - hltf;
 
 		String_Append(healthstr, 20, "&c");
 		for(cs_int32 i = 0; i < hltf; i++) {
@@ -39,7 +39,7 @@ void SurvGui_DrawOxygen(SurvivalData *data) {
 
 	if(!data->godMode && data->showOxygen) {
 		String_Copy(oxystr, 13, "&b");
-		for(cs_uint8 i = 0; i < 10; i++) {
+		for(cs_byte i = 0; i < 10; i++) {
 			String_Append(oxystr, 13, data->oxygen > i ? "\7" : " ");
 		}
 	}

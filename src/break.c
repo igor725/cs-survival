@@ -56,7 +56,7 @@ void SurvBrk_Tick(SurvivalData *data, cs_uint32 delta) {
 
 	data->breakTimer += (cs_uint16)delta;
 	float df = (data->breakTimer / (float)breakTime);
-	cs_uint8 newProgress = (cs_uint8)(df * SURV_MAX_BRK);
+	cs_byte newProgress = (cs_byte)(df * SURV_MAX_BRK);
 	if(newProgress > data->breakProgress) {
 		data->breakProgress = newProgress;
 		SurvGui_DrawBreakProgress(data);

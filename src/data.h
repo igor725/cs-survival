@@ -6,11 +6,11 @@ typedef struct {
 	Client *client;
 	cs_uint16 inventory[256];
 	SVec lastClick;
-	cs_uint8 health, oxygen;
+	cs_byte health, oxygen;
 	cs_bool showOxygen, godMode, pvpMode;
 	cs_uint16 regenTimer, breakTimer;
 	cs_bool breakStarted;
-	cs_uint8 breakProgress;
+	cs_byte breakProgress;
 	BlockID breakBlock;
 } SurvivalData;
 

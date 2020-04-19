@@ -42,7 +42,7 @@ static cs_bool Survival_OnBlockPlace(void *param) {
 	SurvivalData *data = SurvData_Get(client);
 	if(data->godMode) return true;
 
-	cs_uint8 mode = a->mode;
+	cs_byte mode = a->mode;
 	BlockID id = *a->id;
 
 	if(mode == 0x00) {
@@ -165,7 +165,7 @@ COMMAND_FUNC(God) {
 COMMAND_FUNC(Hurt) {
 	char damage[32];
 	if(COMMAND_GETARG(damage, 32, 0)){
-		cs_uint8 dmg = (cs_uint8)(String_ToFloat(damage) * 2);
+		cs_byte dmg = (cs_byte)(String_ToFloat(damage) * 2);
 		SurvDmg_Hurt(SurvData_Get(ccdata->caller), NULL, dmg);
 	}
 
@@ -188,7 +188,7 @@ TIMER_FUNC(FluidTester) {
 		Client *client = Clients_List[id];
 		if(!client || !Client_IsInGame(client)) continue;
 		SurvivalData *data = SurvData_Get(client);
-		cs_uint8 waterLevel = Client_GetFluidLevel(client);
+		cs_byte waterLevel = Client_GetFluidLevel(client);
 
 		if(data->showOxygen) {
 			if(waterLevel > 1) {
