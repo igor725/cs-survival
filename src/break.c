@@ -18,33 +18,34 @@ static void UpdateBlock(World *world, SVec *pos, BlockID bid) {
 	}
 }
 
-void SurvBrk_Start(SurvivalData *data, BlockID block) {
+void SurvBrk_Start(SrvData *data, BlockID block) {
 	data->breakStarted = true;
 	data->breakBlock = block;
 	data->breakTimer = 0;
 }
 
-void SurvBrk_Stop(SurvivalData *data) {
+void SurvBrk_Stop(SrvData *data) {
 	data->breakProgress = 0;
 	data->breakStarted = false;
 	SurvGui_DrawBreakProgress(data);
 }
 
-void SurvBrk_Done(SurvivalData *data) {
+void SurvBrk_Done(SrvData *data) {
 	SVec *pos = &data->lastClick;
 	Client *client = data->client;
 	World *world = Client_GetWorld(client);
 	BlockID id = data->breakBlock;
 
 	SurvInv_Add(data, id, 1);
-	Client_SetHeld(client, id, false);
+	if(!Client_GetHeldBlock(client))
+		Client_SetHeld(client, id, false);
 	SurvGui_DrawBlockInfo(data, id);
 	World_SetBlock(world, pos, BLOCK_AIR);
 	UpdateBlock(world, pos, BLOCK_AIR);
 	SurvBrk_Stop(data);
 }
 
-void SurvBrk_Tick(SurvivalData *data, cs_uint32 delta) {
+void SurvBrk_Tick(SrvData *data, cs_uint32 delta) {
 	cs_int32 breakTime = BreakTimings[data->breakBlock];
 	if(breakTime == -1) {
 		SurvBrk_Stop(data);

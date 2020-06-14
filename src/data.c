@@ -6,7 +6,7 @@
 #include "data.h"
 
 void SurvData_Create(Client *client) {
-	SurvivalData *ptr = Memory_Alloc(1, sizeof(SurvivalData));
+	SrvData *ptr = Memory_Alloc(1, sizeof(SrvData));
 	Assoc_Set(client, SurvData_AssocType, (void *)ptr);
 	ptr->client = client;
 	ptr->health = 20;
@@ -17,11 +17,11 @@ void SurvData_Free(Client *client) {
 	Assoc_Remove(client, SurvData_AssocType, true);
 }
 
-SurvivalData *SurvData_Get(Client *client) {
+SrvData *SurvData_Get(Client *client) {
 	return Assoc_GetPtr(client, SurvData_AssocType);
 }
 
-SurvivalData *SurvData_GetByID(ClientID id) {
+SrvData *SurvData_GetByID(ClientID id) {
 	Client *client = Client_GetByID(id);
 	return client ? Assoc_GetPtr(client, SurvData_AssocType) : NULL;
 }

@@ -6,7 +6,7 @@
 #include "inventory.h"
 #include "gui.h"
 
-void SurvInv_Init(SurvivalData *data) {
+void SurvInv_Init(SrvData *data) {
 	Client *client = data->client;
 
 	SurvInv_UpdateInventory(data);
@@ -15,7 +15,7 @@ void SurvInv_Init(SurvivalData *data) {
 	}
 }
 
-void SurvInv_UpdateInventory(SurvivalData *data) {
+void SurvInv_UpdateInventory(SrvData *data) {
 	Order invIdx = 0;
 	Client *client = data->client;
 	cs_uint16 *inv = data->inventory;
@@ -30,7 +30,7 @@ void SurvInv_UpdateInventory(SurvivalData *data) {
 	}
 }
 
-cs_uint16 SurvInv_Add(SurvivalData *data, BlockID id, cs_uint16 count) {
+cs_uint16 SurvInv_Add(SrvData *data, BlockID id, cs_uint16 count) {
 	cs_uint16 *inv = data->inventory;
 	cs_uint16 old = inv[id];
 
@@ -44,11 +44,11 @@ cs_uint16 SurvInv_Add(SurvivalData *data, BlockID id, cs_uint16 count) {
 	return 0;
 }
 
-cs_uint16 SurvInv_Get(SurvivalData *data, BlockID id) {
+cs_uint16 SurvInv_Get(SrvData *data, BlockID id) {
 	return data->inventory[id];
 }
 
-cs_uint16 SurvInv_Take(SurvivalData *data, BlockID id, cs_uint16 count) {
+cs_uint16 SurvInv_Take(SrvData *data, BlockID id, cs_uint16 count) {
 	cs_uint16 *inv = data->inventory;
 	cs_uint16 old = inv[id];
 

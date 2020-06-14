@@ -12,10 +12,10 @@ typedef struct {
 	cs_bool breakStarted;
 	cs_byte breakProgress;
 	BlockID breakBlock;
-} SurvivalData;
+} SrvData;
 
 void SurvData_Create(Client *client);
 void SurvData_Free(Client *client);
-SurvivalData *SurvData_Get(Client *client);
-SurvivalData *SurvData_GetByID(ClientID id);
+SrvData *SurvData_Get(Client *client);
+SrvData *SurvData_GetByID(ClientID id);
 #endif // SURV_DATA_H

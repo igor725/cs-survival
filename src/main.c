@@ -30,7 +30,7 @@ static void Survival_OnHandshake(void *param) {
 }
 
 static void Survival_OnSpawn(void *param) {
-	SurvivalData *data = SurvData_Get((Client *)param);
+	SrvData *data = SurvData_Get((Client *)param);
 	SurvGui_DrawAll(data);
 	SurvHacks_Update(data);
 	SurvInv_Init(data);
@@ -39,7 +39,7 @@ static void Survival_OnSpawn(void *param) {
 static cs_bool Survival_OnBlockPlace(void *param) {
 	onBlockPlace *a = (onBlockPlace *)param;
 	Client *client = a->client;
-	SurvivalData *data = SurvData_Get(client);
+	SrvData *data = SurvData_Get(client);
 	if(data->godMode) return true;
 
 	cs_byte mode = a->mode;
@@ -64,7 +64,7 @@ static cs_bool Survival_OnBlockPlace(void *param) {
 
 static void Survival_OnHeldChange(void *param) {
 	onHeldBlockChange *a = (onHeldBlockChange *)param;
-	SurvivalData *data = SurvData_Get(a->client);
+	SrvData *data = SurvData_Get(a->client);
 	if(!data->godMode)
 		SurvGui_DrawBlockInfo(data, a->curr);
 }
@@ -72,7 +72,7 @@ static void Survival_OnHeldChange(void *param) {
 static void Survival_OnTick(void *param) {
 	cs_int32 delta = *(cs_int32 *)param;
 	for(ClientID i = 0; i < MAX_CLIENTS; i++) {
-		SurvivalData *data = SurvData_GetByID(i);
+		SrvData *data = SurvData_GetByID(i);
 		if(data && data->breakStarted)
 			SurvBrk_Tick(data, delta);
 	}
@@ -87,7 +87,7 @@ static void Survival_OnClick(void *param) {
 	if(a->button != 0) return;
 
 	Client *client = a->client;
-	SurvivalData *data = SurvData_Get(client);
+	SrvData *data = SurvData_Get(client);
 	if(data->godMode) return;
 
 	if(a->action == 1) {
@@ -97,7 +97,7 @@ static void Survival_OnClick(void *param) {
 
 	SVec *blockPos = a->pos;
 	Client *target = Client_GetByID(a->tgid);
-	SurvivalData *dataTg = NULL;
+	SrvData *dataTg = NULL;
 	if(target) dataTg = SurvData_Get(target);
 
 	float dist_entity = 32768.0f;
@@ -153,7 +153,7 @@ static void Survival_OnClick(void *param) {
 }
 
 COMMAND_FUNC(God) {
-	SurvivalData *data = SurvData_Get(ccdata->caller);
+	SrvData *data = SurvData_Get(ccdata->caller);
 	data->godMode ^= 1;
 	SurvGui_DrawAll(data);
 	SurvHacks_Update(data);
@@ -173,7 +173,7 @@ COMMAND_FUNC(Hurt) {
 }
 
 COMMAND_FUNC(PvP) {
-	SurvivalData *data = SurvData_Get(ccdata->caller);
+	SrvData *data = SurvData_Get(ccdata->caller);
 	if(data->godMode) {
 		COMMAND_PRINT("This command can't be used from god mode.");
 	}
@@ -187,7 +187,7 @@ TIMER_FUNC(FluidTester) {
 	for(ClientID id = 0; id < MAX_CLIENTS; id++) {
 		Client *client = Clients_List[id];
 		if(!client || !Client_IsInGame(client)) continue;
-		SurvivalData *data = SurvData_Get(client);
+		SrvData *data = SurvData_Get(client);
 		cs_byte waterLevel = Client_GetFluidLevel(client);
 
 		if(data->showOxygen) {

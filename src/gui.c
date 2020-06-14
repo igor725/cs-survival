@@ -8,7 +8,7 @@
 #include "gui.h"
 #include "inventory.h"
 
-void SurvGui_DrawHealth(SurvivalData *data) {
+void SurvGui_DrawHealth(SrvData *data) {
 	char healthstr[20] = {0};
 
 	if(!data->godMode) {
@@ -34,7 +34,7 @@ void SurvGui_DrawHealth(SurvivalData *data) {
 	Client_Chat(data->client, MT_STATUS1, healthstr);
 }
 
-void SurvGui_DrawOxygen(SurvivalData *data) {
+void SurvGui_DrawOxygen(SrvData *data) {
 	char oxystr[13] = {0};
 
 	if(!data->godMode && data->showOxygen) {
@@ -47,7 +47,7 @@ void SurvGui_DrawOxygen(SurvivalData *data) {
 	Client_Chat(data->client, MT_STATUS2, oxystr);
 }
 
-void SurvGui_DrawBreakProgress(SurvivalData *data) {
+void SurvGui_DrawBreakProgress(SrvData *data) {
 	char breakstr[19] = {0};
 
 	if(data->breakStarted) {
@@ -63,7 +63,7 @@ void SurvGui_DrawBreakProgress(SurvivalData *data) {
 	Client_Chat(data->client, MT_ANNOUNCE, breakstr);
 }
 
-void SurvGui_DrawBlockInfo(SurvivalData *data, BlockID id) {
+void SurvGui_DrawBlockInfo(SrvData *data, BlockID id) {
 	char blockinfo[64] = {0};
 
 	if(id > BLOCK_AIR) {
@@ -75,7 +75,7 @@ void SurvGui_DrawBlockInfo(SurvivalData *data, BlockID id) {
 	Client_Chat(data->client, MT_BRIGHT1, blockinfo);
 }
 
-void SurvGui_DrawAll(SurvivalData *data) {
+void SurvGui_DrawAll(SrvData *data) {
 	SurvGui_DrawHealth(data);
 	SurvGui_DrawOxygen(data);
 }
