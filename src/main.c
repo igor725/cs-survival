@@ -30,9 +30,11 @@ static void Survival_OnHandshake(void *param) {
 }
 
 static void Survival_OnSpawn(void *param) {
-	SrvData *data = SurvData_Get((Client *)param);
+	Client *cl = (Client *)param;
+	SrvData *data = SurvData_Get(cl);
+	data->lastPos = cl->playerData->position;
 	SurvGui_DrawAll(data);
-	SurvHacks_Update(data);
+	SurvHacks_Set(data);
 	SurvInv_Init(data);
 }
 
@@ -73,8 +75,11 @@ static void Survival_OnTick(void *param) {
 	cs_int32 delta = *(cs_int32 *)param;
 	for(ClientID i = 0; i < MAX_CLIENTS; i++) {
 		SrvData *data = SurvData_GetByID(i);
-		if(data && data->breakStarted)
-			SurvBrk_Tick(data, delta);
+		if(data) {
+			if(data->breakStarted)
+				SurvBrk_Tick(data, delta);
+			SurvHacks_Update(data);
+		}
 	}
 }
 
@@ -92,6 +97,11 @@ static void Survival_OnClick(void *param) {
 
 	if(a->action == 1) {
 		SurvBrk_Stop(data);
+		return;
+	}
+
+	if(!SurvHacks_ValidateClick(a, data)) {
+		Client_Kick(client, "Click hack detected!");
 		return;
 	}
 
@@ -155,8 +165,8 @@ static void Survival_OnClick(void *param) {
 COMMAND_FUNC(God) {
 	SrvData *data = SurvData_Get(ccdata->caller);
 	data->godMode ^= 1;
+	SurvHacks_Set(data);
 	SurvGui_DrawAll(data);
-	SurvHacks_Update(data);
 	SurvInv_UpdateInventory(data);
 	SurvGui_DrawBlockInfo(data, data->godMode ? 0 : Client_GetHeldBlock(ccdata->caller));
 	COMMAND_PRINTF("God mode %s", MODE(data->godMode));
@@ -224,6 +234,7 @@ cs_bool Plugin_Load(void) {
 	COMMAND_ADD(Hurt, CMDF_CLIENT);
 	COMMAND_ADD(PvP, CMDF_CLIENT);
 
+	SurvHacks_Init();
 	SurvData_AssocType = Assoc_NewType();
 	Timer_Add(-1, 1000, FluidTester, NULL);
 	Event_RegisterVoid(EVT_ONTICK, Survival_OnTick);
