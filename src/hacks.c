@@ -41,7 +41,7 @@ void SurvHacks_Set(SrvData *data) {
 }
 
 void SurvHacks_Update(SrvData *data) {
-	if(data->hackBypass) return;
+	if(data->hackBypass || data->godMode) return;
 	if(data->hackScore < 10) {
 		Vec *playerPos = &data->client->playerData->position;
 		cs_float *ppt = (cs_float *)playerPos,
