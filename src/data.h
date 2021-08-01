@@ -1,6 +1,6 @@
 #ifndef SURV_DATA_H
 #define SURV_DATA_H
-cs_uint16 SurvData_AssocType;
+extern cs_uint16 SurvData_AssocType;
 
 typedef struct {
 	Client *client;

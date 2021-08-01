@@ -10,13 +10,13 @@ void SurvInv_Init(SrvData *data) {
 	Client *client = data->client;
 
 	SurvInv_UpdateInventory(data);
-	for(Order i = 0; i < 9; i++) {
+	for(cs_byte i = 0; i < 9; i++) {
 		Client_SetHotbar(client, i, BLOCK_AIR);
 	}
 }
 
 void SurvInv_UpdateInventory(SrvData *data) {
-	Order invIdx = 0;
+	cs_byte invIdx = 0;
 	Client *client = data->client;
 	cs_uint16 *inv = data->inventory;
 
