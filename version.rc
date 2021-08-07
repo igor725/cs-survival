@@ -12,7 +12,6 @@ FILETYPE VFT_DLL
 			VALUE "FileDescription", "Survival plugin for CServer\000"
 			VALUE "ProductName", "Survival plugin\000"
 			VALUE "ProductVersion", "1.0\000"
-			VALUE "LegalCopyright", "\251 2019 Igor Gvaldov\000"
 			VALUE "OriginalFilename", "survival.dll\000"
 		}
 	}
