@@ -3,7 +3,6 @@
 #include <protocol.h>
 #include <block.h>
 #include <str.h>
-
 #include "data.h"
 #include "gui.h"
 #include "inventory.h"

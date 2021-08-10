@@ -2,8 +2,8 @@
 #include <platform.h>
 #include <client.h>
 #include <config.h>
-
 #include "data.h"
+
 cs_uint16 SurvData_AssocType = 0;
 
 void SurvData_Create(Client *client) {

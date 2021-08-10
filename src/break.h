@@ -1,5 +1,7 @@
 #ifndef SURV_BREAK_H
 #define SURV_BREAK_H
+#include <core.h>
+#include "data.h"
 
 #define SURV_MAX_BRK 10
 

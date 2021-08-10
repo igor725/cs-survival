@@ -1,7 +1,6 @@
 #include <core.h>
 #include <client.h>
 #include <block.h>
-
 #include "data.h"
 #include "break.h"
 #include "gui.h"

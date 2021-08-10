@@ -9,7 +9,6 @@
 #include <protocol.h>
 #include <server.h>
 #include <timer.h>
-
 #include "data.h"
 #include "damage.h"
 #include "gui.h"

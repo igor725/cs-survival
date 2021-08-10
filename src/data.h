@@ -1,5 +1,9 @@
 #ifndef SURV_DATA_H
 #define SURV_DATA_H
+#include "core.h"
+#include "vector.h"
+#include "client.h"
+
 extern cs_uint16 SurvData_AssocType;
 
 typedef struct {

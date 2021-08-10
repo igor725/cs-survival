@@ -1,6 +1,5 @@
 #include <core.h>
 #include <client.h>
-
 #include "data.h"
 #include "gui.h"
 #include "damage.h"
