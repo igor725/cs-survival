@@ -224,7 +224,7 @@ TIMER_FUNC(FluidTester) {
 Plugin_SetVersion(1)
 
 cs_bool Plugin_Load(void) {
-	if(Server_Active) {
+	if(Server_Ready) {
 		Log_Error("Survival plugin can be loaded only at server startup.");
 		return false;
 	}
