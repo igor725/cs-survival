@@ -16,6 +16,8 @@
 #include "break.h"
 #include "inventory.h"
 
+#define MODE(a) (a) ? "&aenabled" : "&cdisabled"
+
 static void Survival_OnHandshake(void *param) {
 	Client *client = (Client *)param;
 	if(!Client_GetExtVer(client, EXT_HACKCTRL) ||
