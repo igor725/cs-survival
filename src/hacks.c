@@ -64,10 +64,10 @@ void SurvHacks_Update(SrvData *data) {
 }
 
 cs_bool SurvHacks_ValidateClick(onPlayerClick *click, SrvData *data) {
-	if(Vec_IsInvalid(click->pos)) return true;
+	if(Vec_IsInvalid(&click->tgpos)) return true;
 	Vec tmp;
-	tmp.x = (cs_float)click->pos->x;
-	tmp.y = (cs_float)click->pos->y;
-	tmp.z = (cs_float)click->pos->z;
+	tmp.x = (cs_float)click->tgpos.x;
+	tmp.y = (cs_float)click->tgpos.y;
+	tmp.z = (cs_float)click->tgpos.z;
 	return Math_Distance(&data->client->playerData->position, &tmp) < 6.0f;
 }

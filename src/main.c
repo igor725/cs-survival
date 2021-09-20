@@ -46,7 +46,7 @@ static cs_bool Survival_OnBlockPlace(void *param) {
 	if(data->godMode) return true;
 
 	cs_byte mode = a->mode;
-	BlockID id = *a->id;
+	BlockID id = a->id;
 
 	if(mode == 0x00) {
 		Client_Kick(client, "Your client seems to be ignoring the setBlockPermission packet.");
@@ -106,7 +106,7 @@ static void Survival_OnClick(void *param) {
 		return;
 	}
 
-	SVec *blockPos = a->pos;
+	SVec *blockPos = &a->tgpos;
 	Client *target = Client_GetByID(a->tgid);
 	SrvData *dataTg = NULL;
 	if(target) dataTg = SurvData_Get(target);
@@ -248,6 +248,6 @@ cs_bool Plugin_Load(void) {
 	return true;
 }
 
-cs_bool Plugin_Unload(void) {
-	return false;
+cs_bool Plugin_Unload(cs_bool force) {
+	return force;
 }
