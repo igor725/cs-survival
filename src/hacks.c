@@ -9,7 +9,7 @@ TIMER_FUNC(HackScore) {
 	(void)left; (void)ticks; (void)ud;
 	for(ClientID id = 0; id < MAX_CLIENTS; id++) {
 		Client *client = Clients_List[id];
-		if(!client || !Client_IsInGame(client)) continue;
+		if(!client || !Client_CheckState(client, STATE_INGAME)) continue;
 		SrvData *data = SurvData_Get(client);
 		if(data->hackScore > 0) data->hackScore--;
 	}
