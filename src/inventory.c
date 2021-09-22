@@ -6,26 +6,22 @@
 #include "gui.h"
 
 void SurvInv_Init(SrvData *data) {
-	Client *client = data->client;
-
 	SurvInv_UpdateInventory(data);
 	for(cs_byte i = 0; i < 9; i++) {
-		Client_SetHotbar(client, i, BLOCK_AIR);
+		Client_SetHotbar(data->client, i, BLOCK_AIR);
 	}
 }
 
 void SurvInv_UpdateInventory(SrvData *data) {
 	cs_byte invIdx = 0;
-	Client *client = data->client;
-	cs_uint16 *inv = data->inventory;
 
 	for(BlockID i = 1; i < 255; i++) {
-		cs_bool mz = inv[i] > 0 || data->godMode;
-		Client_SetBlockPerm(client, i, mz, data->godMode);
+		cs_bool mz = data->inventory[i] > 0 || data->godMode;
+		Client_SetBlockPerm(data->client, i, mz, data->godMode);
 		if(mz)
-			Client_SetInvOrder(client, ++invIdx, i);
+			Client_SetInvOrder(data->client, ++invIdx, i);
 		else
-			Client_SetInvOrder(client, 0, i);
+			Client_SetInvOrder(data->client, 0, i);
 	}
 }
 

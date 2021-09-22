@@ -20,7 +20,6 @@ void SurvHacks_Init(void) {
 }
 
 void SurvHacks_Set(SrvData *data) {
-	Client *client = data->client;
 	CPEHacks hacks;
 
 	hacks.tpv = true;
@@ -37,7 +36,7 @@ void SurvHacks_Set(SrvData *data) {
 		hacks.speeding = false;
 	}
 
-	Client_SendHacks(client, &hacks);
+	Client_SendHacks(data->client, &hacks);
 }
 
 void SurvHacks_Update(SrvData *data) {

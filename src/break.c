@@ -31,13 +31,12 @@ void SurvBrk_Stop(SrvData *data) {
 
 void SurvBrk_Done(SrvData *data) {
 	SVec *pos = &data->lastClick;
-	Client *client = data->client;
-	World *world = Client_GetWorld(client);
+	World *world = Client_GetWorld(data->client);
 	BlockID id = data->breakBlock;
 
 	SurvInv_Add(data, id, 1);
-	if(!Client_GetHeldBlock(client))
-		Client_SetHeld(client, id, false);
+	if(!Client_GetHeldBlock(data->client))
+		Client_SetHeld(data->client, id, false);
 	SurvGui_DrawBlockInfo(data, id);
 	World_SetBlock(world, pos, BLOCK_AIR);
 	UpdateBlock(world, pos, BLOCK_AIR);
