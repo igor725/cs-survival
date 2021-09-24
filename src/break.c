@@ -12,8 +12,9 @@ static const cs_int32 BreakTimings[256] = {
 
 static void UpdateBlock(World *world, SVec *pos, BlockID bid) {
 	for(ClientID i = 0; i < MAX_CLIENTS; i++) {
-		Client *cl = Client_GetByID(i);
-		if(cl && Client_IsInWorld(cl, world)) Client_SetBlock(cl, pos, bid);
+		Client *client = Client_GetByID(i);
+		if(client && Client_IsInWorld(client, world))
+			Client_SetBlock(client, pos, bid);
 	}
 }
 
