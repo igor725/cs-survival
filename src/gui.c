@@ -30,7 +30,7 @@ void SurvGui_DrawHealth(SrvData *data) {
 		}
 	}
 
-	Client_Chat(data->client, MT_STATUS1, healthstr);
+	Client_Chat(data->client, MESSAGE_TYPE_STATUS1, healthstr);
 }
 
 void SurvGui_DrawOxygen(SrvData *data) {
@@ -43,7 +43,7 @@ void SurvGui_DrawOxygen(SrvData *data) {
 		}
 	}
 
-	Client_Chat(data->client, MT_STATUS2, oxystr);
+	Client_Chat(data->client, MESSAGE_TYPE_STATUS2, oxystr);
 }
 
 void SurvGui_DrawBreakProgress(SrvData *data) {
@@ -59,7 +59,7 @@ void SurvGui_DrawBreakProgress(SrvData *data) {
 		String_Append(breakstr, 19, "&f]");
 	}
 
-	Client_Chat(data->client, MT_ANNOUNCE, breakstr);
+	Client_Chat(data->client, MESSAGE_TYPE_ANNOUNCE, breakstr);
 }
 
 void SurvGui_DrawBlockInfo(SrvData *data, BlockID id) {
@@ -71,7 +71,7 @@ void SurvGui_DrawBlockInfo(SrvData *data, BlockID id) {
 		String_FormatBuf(blockinfo, 64, "%s (%d)", bn, bc);
 	}
 
-	Client_Chat(data->client, MT_BRIGHT1, blockinfo);
+	Client_Chat(data->client, MESSAGE_TYPE_BRIGHT1, blockinfo);
 }
 
 void SurvGui_DrawAll(SrvData *data) {
