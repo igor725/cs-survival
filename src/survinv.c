@@ -37,8 +37,10 @@ cs_uint16 SurvInv_Add(SrvData *data, BlockID id, cs_uint16 count) {
 	if(old < SURV_MAX_BLOCKS) {
 		cs_uint16 newC = min(SURV_MAX_BLOCKS, old + count);
 		inv[id] = newC;
-		if(old < 1)
+		if(old < 1) {
 			SurvInv_UpdateInventory(data);
+			Client_SetHeld(data->client, id, false);
+		}
 		return newC - old;
 	}
 	return 0;
@@ -55,8 +57,10 @@ cs_uint16 SurvInv_Take(SrvData *data, BlockID id, cs_uint16 count) {
 	if(old > 0) {
 		cs_uint16 newC = old - min(old, count);
 		inv[id] = newC;
-		if(newC == 0)
+		if(newC == 0) {
 			SurvInv_UpdateInventory(data);
+			Client_SetHeld(data->client, BLOCK_AIR, false);
+		}
 		return old - newC;
 	}
 	return 0;

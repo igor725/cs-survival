@@ -7,7 +7,11 @@
 #include "survinv.h"
 
 static const cs_int32 BreakTimings[256] = {
-	0, 4000, 500, 500, 4000, 1100, 0, -1
+	0, 4000, 500, 500, 4000, 1100, 0, -1, -1, -1, -1,
+	-1, 500, 500, 4000, 4000, 4000, 600, 250, 250, 0,
+	1500, 1500, 1500, 1500, 1500, 1500, 1500, 1500, 1500, 1500,
+	1500, 1500, 1500, 1500, 1500, 1500, 0, 0, 0, 0, 7000, 7000,
+	7000, 6400, 7000, 400, 1100, 4000, 20000
 };
 
 static void UpdateBlock(World *world, SVec *pos, BlockID bid) {
@@ -19,10 +23,11 @@ static void UpdateBlock(World *world, SVec *pos, BlockID bid) {
 }
 
 void SurvBrk_Start(SrvData *data, BlockID block) {
-	if(block < BLOCK_WATER || block > BLOCK_LAVA_STILL) {
+	if(BreakTimings[block] != -1) {
 		data->breakStarted = true;
 		data->breakBlock = block;
 		data->breakTimer = 0;
+		SurvGui_DrawBreakProgress(data);
 	}
 }
 
