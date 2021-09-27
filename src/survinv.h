@@ -7,6 +7,7 @@
 #define SURV_MAX_BLOCKS 999
 
 void SurvInv_Init(SrvData *data);
+void SurvInv_Empty(SrvData *data);
 void SurvInv_UpdateInventory(SrvData *data);
 cs_uint16 SurvInv_Get(SrvData *data, BlockID id);
 cs_uint16 SurvInv_Take(SrvData *data, BlockID id, cs_uint16 count);

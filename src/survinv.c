@@ -12,6 +12,11 @@ void SurvInv_Init(SrvData *data) {
 	}
 }
 
+void SurvInv_Empty(SrvData *data) {
+	for(BlockID i = 1; i < 254; i++)
+		data->inventory[i] = 0;
+}
+
 void SurvInv_UpdateInventory(SrvData *data) {
 	cs_byte invIdx = 0;
 

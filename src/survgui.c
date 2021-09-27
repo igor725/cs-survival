@@ -8,24 +8,24 @@
 #include "survinv.h"
 
 void SurvGui_DrawHealth(SrvData *data) {
-	char healthstr[20] = {0};
+	char healthstr[SURV_MAX_HEALTH + 1] = {0};
 
 	if(!data->godMode) {
 		cs_byte hltf = data->health / 2;
-		cs_byte empty = 10 - hltf;
+		cs_byte empty = (SURV_MAX_HEALTH / 2) - hltf;
 
-		String_Append(healthstr, 20, "&c");
+		String_Append(healthstr, SURV_MAX_HEALTH, "&c");
 		for(cs_int32 i = 0; i < hltf; i++) {
-			String_Append(healthstr, 20, "\3");
+			String_Append(healthstr, SURV_MAX_HEALTH, "\3");
 		}
 		if(data->health % 2) {
-			String_Append(healthstr, 20, "&4\3");
+			String_Append(healthstr, SURV_MAX_HEALTH, "&4\3");
 			empty -= 1;
 		}
 		if(empty > 0) {
-			String_Append(healthstr, 20, "&8");
+			String_Append(healthstr, SURV_MAX_HEALTH, "&8");
 			for(cs_int32 i = 0; i < empty; i++) {
-				String_Append(healthstr, 20, "\3");
+				String_Append(healthstr, SURV_MAX_HEALTH, "\3");
 			}
 		}
 	}
@@ -34,12 +34,12 @@ void SurvGui_DrawHealth(SrvData *data) {
 }
 
 void SurvGui_DrawOxygen(SrvData *data) {
-	char oxystr[13] = {0};
+	char oxystr[SURV_MAX_OXYGEN + 4] = {0};
 
 	if(!data->godMode && data->showOxygen) {
-		String_Copy(oxystr, 13, "&b");
-		for(cs_byte i = 0; i < 10; i++) {
-			String_Append(oxystr, 13, data->oxygen > i ? "\7" : " ");
+		String_Copy(oxystr, SURV_MAX_OXYGEN + 4, "&b");
+		for(cs_byte i = 0; i < SURV_MAX_OXYGEN; i++) {
+			String_Append(oxystr, SURV_MAX_OXYGEN + 4, data->oxygen > i ? "\7" : " ");
 		}
 	}
 
@@ -47,28 +47,28 @@ void SurvGui_DrawOxygen(SrvData *data) {
 }
 
 void SurvGui_DrawBreakProgress(SrvData *data) {
-	char breakstr[19] = {0};
+	char breakstr[SURV_MAX_BREAKPRG * 2] = {0};
 
 	if(data->breakStarted) {
-		String_Append(breakstr, 19, "[&a");
-		for(cs_int32 i = 0; i < 10; i++) {
+		String_Append(breakstr, SURV_MAX_BREAKPRG * 2, "[&a");
+		for(cs_int32 i = 0; i < SURV_MAX_BREAKPRG; i++) {
 			if(i == data->breakProgress)
-				String_Append(breakstr, 19, "&8");
-			String_Append(breakstr, 19, "|");
+				String_Append(breakstr, SURV_MAX_BREAKPRG * 2, "&8");
+			String_Append(breakstr, SURV_MAX_BREAKPRG * 2, "|");
 		}
-		String_Append(breakstr, 19, "&f]");
+		String_Append(breakstr, SURV_MAX_BREAKPRG * 2, "&f]");
 	}
 
 	Client_Chat(data->client, MESSAGE_TYPE_ANNOUNCE, breakstr);
 }
 
 void SurvGui_DrawBlockInfo(SrvData *data, BlockID id) {
-	char blockinfo[64] = {0};
+	char blockinfo[65] = {0};
 
 	if(id > BLOCK_AIR) {
 		const char *bn = Block_GetName(id);
 		cs_uint16 bc = SurvInv_Get(data, id);
-		String_FormatBuf(blockinfo, 64, "%s (%d)", bn, bc);
+		String_FormatBuf(blockinfo, 65, "%s (%d)", bn, bc);
 	}
 
 	Client_Chat(data->client, MESSAGE_TYPE_BRIGHT1, blockinfo);

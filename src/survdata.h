@@ -4,6 +4,10 @@
 #include "vector.h"
 #include "client.h"
 
+#define SURV_MAX_HEALTH 20
+#define SURV_MAX_OXYGEN 10
+#define SURV_MAX_BREAKPRG 10
+
 extern cs_uint16 SurvData_AssocType;
 
 typedef struct {
@@ -14,7 +18,7 @@ typedef struct {
 	cs_byte health, oxygen, hackScore;
 	cs_bool showOxygen, godMode, pvpMode;
 	cs_uint16 regenTimer, breakTimer;
-	cs_bool breakStarted, hackBypass;
+	cs_bool breakStarted;
 	cs_byte breakProgress;
 	BlockID breakBlock;
 } SrvData;
