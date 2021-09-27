@@ -2,8 +2,8 @@
 #include <client.h>
 #include <timer.h>
 #include <csmath.h>
-#include "data.h"
-#include "hacks.h"
+#include "survdata.h"
+#include "survhacks.h"
 
 TIMER_FUNC(HackScore) {
 	(void)left; (void)ticks; (void)ud;

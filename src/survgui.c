@@ -3,9 +3,9 @@
 #include <protocol.h>
 #include <block.h>
 #include <str.h>
-#include "data.h"
-#include "gui.h"
-#include "inventory.h"
+#include "survdata.h"
+#include "survgui.h"
+#include "survinv.h"
 
 void SurvGui_DrawHealth(SrvData *data) {
 	char healthstr[20] = {0};

@@ -1,9 +1,9 @@
 #include <core.h>
 #include <client.h>
 #include <block.h>
-#include "data.h"
-#include "inventory.h"
-#include "gui.h"
+#include "survdata.h"
+#include "survinv.h"
+#include "survgui.h"
 
 void SurvInv_Init(SrvData *data) {
 	SurvInv_UpdateInventory(data);

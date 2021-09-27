@@ -2,7 +2,7 @@
 #define SURV_GUI_H
 #include <core.h>
 #include <block.h>
-#include "data.h"
+#include "survdata.h"
 
 void SurvGui_DrawHealth(SrvData *data);
 void SurvGui_DrawBreakProgress(SrvData *data);

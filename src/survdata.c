@@ -2,7 +2,7 @@
 #include <platform.h>
 #include <client.h>
 #include <config.h>
-#include "data.h"
+#include "survdata.h"
 
 cs_uint16 SurvData_AssocType = 0;
 

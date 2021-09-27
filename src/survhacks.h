@@ -2,7 +2,7 @@
 #define SURV_HACKS_H
 #include <core.h>
 #include <event.h>
-#include "data.h"
+#include "survdata.h"
 
 void SurvHacks_Init(void);
 void SurvHacks_Set(SrvData *data);

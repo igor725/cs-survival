@@ -2,7 +2,7 @@
 #define SURV_INV_H
 #include <core.h>
 #include <block.h>
-#include "data.h"
+#include "survdata.h"
 
 #define SURV_MAX_BLOCKS 999
 

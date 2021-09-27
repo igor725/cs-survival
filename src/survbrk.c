@@ -1,10 +1,10 @@
 #include <core.h>
 #include <client.h>
 #include <block.h>
-#include "data.h"
-#include "break.h"
-#include "gui.h"
-#include "inventory.h"
+#include "survdata.h"
+#include "survbrk.h"
+#include "survgui.h"
+#include "survinv.h"
 
 static const cs_int32 BreakTimings[256] = {
 	0, 4000, 500, 500, 4000, 1100, 0, -1
