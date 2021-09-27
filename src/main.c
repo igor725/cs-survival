@@ -195,6 +195,7 @@ TIMER_FUNC(FluidTester) {
 		Client *client = Clients_List[id];
 		if(!client || !Client_CheckState(client, PLAYER_STATE_INGAME)) continue;
 		SrvData *data = SurvData_Get(client);
+		if(!data) continue;
 		cs_byte waterLevel = Client_GetFluidLevel(client);
 
 		if(data->showOxygen) {
