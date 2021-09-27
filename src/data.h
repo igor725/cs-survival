@@ -8,7 +8,7 @@ extern cs_uint16 SurvData_AssocType;
 
 typedef struct {
 	Client *client;
-	cs_uint16 inventory[256];
+	cs_uint16 inventory[254];
 	SVec lastClick;
 	Vec lastPos;
 	cs_byte health, oxygen, hackScore;
