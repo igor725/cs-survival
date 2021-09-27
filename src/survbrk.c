@@ -19,9 +19,11 @@ static void UpdateBlock(World *world, SVec *pos, BlockID bid) {
 }
 
 void SurvBrk_Start(SrvData *data, BlockID block) {
-	data->breakStarted = true;
-	data->breakBlock = block;
-	data->breakTimer = 0;
+	if(block < BLOCK_WATER || block > BLOCK_LAVA_STILL) {
+		data->breakStarted = true;
+		data->breakBlock = block;
+		data->breakTimer = 0;
+	}
 }
 
 void SurvBrk_Stop(SrvData *data) {
