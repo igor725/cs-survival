@@ -27,7 +27,7 @@ static void Survival_OnSpawn(void *param) {
 	Client *cl = (Client *)param;
 	SrvData *data = SurvData_Get(cl);
 	if(data) {
-		data->lastPos = cl->playerData->position;
+		Client_GetPosition(cl, &data->lastPos, NULL);
 		SurvGui_DrawAll(data);
 		SurvHacks_Set(data);
 		SurvInv_Init(data);
@@ -99,7 +99,7 @@ static void Survival_OnClick(void *param) {
 		return;
 	}
 
-	Vec kb;
+	Vec knockback = {0.0f, 0.0f, 0.0f};
 	SVec *blockPos = &a->tgpos;
 	Client *target = Client_GetByID(a->tgid);
 	SrvData *dataTg = NULL;
@@ -109,23 +109,24 @@ static void Survival_OnClick(void *param) {
 	float dist_block = 32768.0f;
 
 	if(!Vec_IsInvalid(blockPos)) {
-		Vec blockcenter;
+		Vec blockcenter, playerpos;
 		blockcenter.x = blockPos->x + .5f;
 		blockcenter.y = blockPos->y + .5f;
 		blockcenter.z = blockPos->z + .5f;
-		dist_block = Math_Distance(&blockcenter, &a->client->playerData->position);
+		if(Client_GetPosition(a->client, &playerpos, NULL))
+			dist_block = Math_Distance(&blockcenter, &playerpos);
 	}
 
 	if(target) {
-		Vec tgcampos = target->playerData->position,
-		plcampos = a->client->playerData->position;
-		kb = a->client->playerData->position;
-		kb.x = -(kb.x - tgcampos.x) * 500.0f;
-		kb.y = -(kb.y - tgcampos.y) * 500.0f;
-		kb.z = -(kb.z - tgcampos.z) * 500.0f;
-		tgcampos.y += 1.59375f;
-		plcampos.y += 1.59375f;
-		dist_entity = Math_Distance(&tgcampos, &plcampos);
+		Vec tgcampos, plcampos;
+		if(Client_GetPosition(target, &tgcampos, NULL) && Client_GetPosition(target, &plcampos, NULL)) {
+			knockback.x = -(plcampos.x - tgcampos.x) * 500.0f;
+			knockback.y = -(plcampos.y - tgcampos.y) * 500.0f;
+			knockback.z = -(plcampos.z - tgcampos.z) * 500.0f;
+			tgcampos.y += 1.59375f;
+			plcampos.y += 1.59375f;
+			dist_entity = Math_Distance(&tgcampos, &plcampos);
+		}
 	}
 
 	if(data->breakStarted && !SVec_Compare(&data->lastClick, blockPos)) {
@@ -135,7 +136,7 @@ static void Survival_OnClick(void *param) {
 
 	if(dist_block < dist_entity && dist_block < 4) {
 		if(!data->breakStarted) {
-			BlockID bid = World_GetBlock(a->client->playerData->world, blockPos);
+			BlockID bid = World_GetBlock(Client_GetWorld(a->client), blockPos);
 			if(bid > BLOCK_AIR) SurvBrk_Start(data, bid);
 		}
 		data->lastClick = *blockPos;
@@ -146,7 +147,7 @@ static void Survival_OnClick(void *param) {
 		}
 		if(data->pvpMode && dataTg->pvpMode) {
 			SurvDmg_Hurt(dataTg, data, 1);
-			Client_SetVelocity(target, &kb, true);
+			Client_SetVelocity(target, &knockback, true);
 		} else {
 			if(!data->pvpMode)
 				Client_Chat(a->client, 0, "Enable pvp mode (/pvp) first.");
