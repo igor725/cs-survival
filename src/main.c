@@ -11,6 +11,7 @@
 #include "survcmds.h"
 #include "survevents.h"
 #include "survtimers.h"
+#include "survfs.h"
 
 Plugin_SetVersion(1)
 
@@ -21,6 +22,7 @@ cs_bool Plugin_Load(void) {
 	}
 
 	SurvData_AssocType = Assoc_NewType();
+	SurvFS_Init();
 	SurvCmds_Init();
 	SurvHacks_Init();
 	SurvEvents_Init();
