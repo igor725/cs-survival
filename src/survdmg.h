@@ -5,4 +5,5 @@
 
 void SurvDmg_Hurt(SrvData *target, SrvData *attacker, cs_byte damage);
 void SurvDmg_Heal(SrvData *target, cs_byte damage);
+void SurvDmg_Die(SrvData *target);
 #endif // SURV_DAMAGE_H

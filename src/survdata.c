@@ -10,8 +10,8 @@ void SurvData_Create(Client *client) {
 	SrvData *ptr = Memory_Alloc(1, sizeof(SrvData));
 	Assoc_Set(client, SurvData_AssocType, (void *)ptr);
 	ptr->client = client;
-	ptr->health = 20;
-	ptr->oxygen = 10;
+	ptr->health = SURV_MAX_HEALTH;
+	ptr->oxygen = SURV_MAX_OXYGEN;
 }
 
 void SurvData_Free(Client *client) {
