@@ -9,6 +9,9 @@
 
 COMMAND_FUNC(God) {
 	SrvData *data = SurvData_Get(ccdata->caller);
+	if(!data) {
+		COMMAND_PRINT("Something went wrong");
+	}
 	data->godMode ^= 1;
 	SurvHacks_Set(data);
 	SurvGui_DrawAll(data);
@@ -19,9 +22,13 @@ COMMAND_FUNC(God) {
 
 COMMAND_FUNC(Hurt) {
 	char damage[32];
+	SrvData *data = SurvData_Get(ccdata->caller);
+	if(!data) {
+		COMMAND_PRINT("Something went wrong");
+	}
 	if(COMMAND_GETARG(damage, 32, 0)){
 		cs_byte dmg = (cs_byte)(String_ToFloat(damage) * 2);
-		SurvDmg_Hurt(SurvData_Get(ccdata->caller), NULL, dmg);
+		SurvDmg_Hurt(data, NULL, dmg);
 	}
 
 	return false;
@@ -29,6 +36,9 @@ COMMAND_FUNC(Hurt) {
 
 COMMAND_FUNC(PvP) {
 	SrvData *data = SurvData_Get(ccdata->caller);
+	if(!data) {
+		COMMAND_PRINT("Something went wrong");
+	}
 	if(data->godMode) {
 		COMMAND_PRINT("This command can't be used from god mode.");
 	}

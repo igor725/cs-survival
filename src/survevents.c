@@ -26,18 +26,17 @@ static void Survival_OnHandshake(void *param) {
 static void Survival_OnSpawn(void *param) {
 	Client *cl = (Client *)param;
 	SrvData *data = SurvData_Get(cl);
-	if(data) {
-		Client_GetPosition(cl, &data->lastPos, NULL);
-		SurvGui_DrawAll(data);
-		SurvHacks_Set(data);
-		SurvInv_Init(data);
-	} else Client_Kick(cl, "No SurvData structure, dafaq?");
+	if(!data) return;
+	Client_GetPosition(cl, &data->lastPos, NULL);
+	SurvGui_DrawAll(data);
+	SurvHacks_Set(data);
+	SurvInv_Init(data);
 }
 
 static cs_bool Survival_OnBlockPlace(void *param) {
 	onBlockPlace *a = (onBlockPlace *)param;
 	SrvData *data = SurvData_Get(a->client);
-	if(data->godMode) return true;
+	if(!data || data->godMode) return true;
 
 	cs_byte mode = a->mode;
 	BlockID id = a->id;
@@ -62,7 +61,7 @@ static cs_bool Survival_OnBlockPlace(void *param) {
 static void Survival_OnHeldChange(void *param) {
 	onHeldBlockChange *a = (onHeldBlockChange *)param;
 	SrvData *data = SurvData_Get(a->client);
-	if(!data->godMode)
+	if(data && !data->godMode)
 		SurvGui_DrawBlockInfo(data, a->curr);
 }
 
@@ -87,7 +86,7 @@ static void Survival_OnClick(void *param) {
 	if(a->button != 0) return;
 
 	SrvData *data = SurvData_Get(a->client);
-	if(data->godMode) return;
+	if(!data || data->godMode) return;
 
 	if(a->action == 1) {
 		SurvBrk_Stop(data);

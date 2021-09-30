@@ -11,7 +11,7 @@ TIMER_FUNC(HackScore) {
 		Client *client = Clients_List[id];
 		if(client && Client_CheckState(client, PLAYER_STATE_INGAME)) {
 			SrvData *data = SurvData_Get(client);
-			if(data->hackScore > 0) data->hackScore--;
+			if(data && data->hackScore > 0) data->hackScore--;
 		}
 	}
 }
