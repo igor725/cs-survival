@@ -32,7 +32,7 @@ INL static cs_bool GetFilePathFor(Client *client, cs_char *path, cs_size len) {
 
 INL static cs_bool ReadPlayerData(SrvData *data, cs_file handle) {
 	cs_bool allok = true;
-	cs_int32 header = 0;
+	cs_uint32 header = 0;
 	Vec position;
 	Ang angle;
 	
@@ -69,7 +69,7 @@ cs_bool SurvFS_LoadPlayerData(SrvData *data) {
 
 INL static cs_bool WritePlayerData(SrvData *data, cs_file handle) {
 	cs_bool allok = true;
-	cs_int32 header = SURVFS_MAGIC;
+	cs_uint32 header = SURVFS_MAGIC;
 	Vec position; Ang angle;
 	
 	allok = Client_GetPosition(data->client, &position, &angle);

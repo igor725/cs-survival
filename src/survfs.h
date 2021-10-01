@@ -3,7 +3,7 @@
 #include <core.h>
 #include "survdata.h"
 
-#define SURVFS_MAGIC 0xDEADBEEF
+#define SURVFS_MAGIC 0xDEADBEEFu
 
 void SurvFS_Init(void);
 cs_bool SurvFS_LoadPlayerData(SrvData *data);
