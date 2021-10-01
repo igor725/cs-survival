@@ -3,6 +3,7 @@
 #include <client.h>
 #include <platform.h>
 #include "survdata.h"
+#include "survfs.h"
 
 cs_str pdat_path = "survdata" PATH_DELIM "players" PATH_DELIM "%s.dat";
 
@@ -27,11 +28,31 @@ INL static cs_bool GetFilePathFor(Client *client, cs_char *path, cs_size len) {
 	return false;
 }
 
-// TODO: Do not read/save whole SrvData structure
+#define READ_ENTRY(e) if(allok) allok = File_Read(&e, sizeof(e), 1, handle) == 1
+
 INL static cs_bool ReadPlayerData(SrvData *data, cs_file handle) {
-	cs_bool rd = File_Read(data, sizeof(SrvData), 1, handle) == 1;
+	cs_bool allok = true;
+	cs_int32 header = 0;
+	Vec position;
+	Ang angle;
+	
+	READ_ENTRY(header);
+	allok = (header == SURVFS_MAGIC);
+	READ_ENTRY(data->pvpMode);
+	READ_ENTRY(data->godMode);
+	READ_ENTRY(data->health);
+	READ_ENTRY(data->oxygen);
+	READ_ENTRY(position);
+	READ_ENTRY(angle);
+	READ_ENTRY(data->inventory);
+
+	if(allok) {
+		Client_TeleportTo(data->client, &position, &angle);
+		data->lastPos = position;
+	}
+
 	File_Close(handle);
-	return rd;
+	return allok;
 }
 
 cs_bool SurvFS_LoadPlayerData(SrvData *data) {
@@ -44,17 +65,40 @@ cs_bool SurvFS_LoadPlayerData(SrvData *data) {
 	return false;
 }
 
+#define WRITE_ENTRY(e) if(allok) allok = File_Write(&e, sizeof(e), 1, handle) == 1
+
 INL static cs_bool WritePlayerData(SrvData *data, cs_file handle) {
-	cs_bool rd = File_Write(data, sizeof(SrvData), 1, handle) == 1;
+	cs_bool allok = true;
+	cs_int32 header = SURVFS_MAGIC;
+	Vec position; Ang angle;
+	
+	allok = Client_GetPosition(data->client, &position, &angle);
+	WRITE_ENTRY(header);
+	WRITE_ENTRY(data->pvpMode);
+	WRITE_ENTRY(data->godMode);
+	WRITE_ENTRY(data->health);
+	WRITE_ENTRY(data->oxygen);
+	WRITE_ENTRY(position);
+	WRITE_ENTRY(angle);
+	WRITE_ENTRY(data->inventory);
+
 	File_Close(handle);
-	return rd;
+	return allok;
 }
 
 cs_bool SurvFS_SavePlayerData(SrvData *data) {
-	cs_char filepath[FILENAME_MAX];
+	cs_char filepath[FILENAME_MAX], tmppath[FILENAME_MAX];
 	if(GetFilePathFor(data->client, filepath, FILENAME_MAX)) {
-		cs_file handle = File_Open(filepath, "wb");
-		if(handle) return WritePlayerData(data, handle);
+		String_Copy(tmppath, FILENAME_MAX, filepath);
+		cs_char *ext = String_FindSubstr(tmppath, ".dat");
+		if(ext) {
+			String_Copy(ext, 5, ".tmp");
+			cs_file handle = File_Open(tmppath, "wb");
+			if(WritePlayerData(data, handle)) {
+				File_Rename(tmppath, filepath);
+				return true;
+			}
+		}
 	}
 
 	return false;

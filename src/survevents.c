@@ -10,7 +10,7 @@
 #include "survinv.h"
 #include "survdmg.h"
 #include "survbrk.h"
-// #include "survfs.h"
+#include "survfs.h"
 
 static void Survival_OnHandshake(void *param) {
 	Client *client = (Client *)param;
@@ -29,9 +29,7 @@ static void Survival_OnSpawn(void *param) {
 	SrvData *data = SurvData_Get(cl);
 	if(!data) return;
 	Client_GetPosition(cl, &data->lastPos, NULL);
-	// SurvFS_LoadPlayerData(data);
-	// Ang zang = {0, 0};
-	// Client_TeleportTo(cl, &data->lastPos, &zang);
+	SurvFS_LoadPlayerData(data);
 	SurvGui_DrawAll(data);
 	SurvHacks_Set(data);
 	SurvInv_Init(data);
@@ -82,9 +80,8 @@ static void Survival_OnTick(void *param) {
 }
 
 static void Survival_OnDisconnect(void *param) {
-	// SrvData *data = SurvData_Get((Client *)param);
-	// if(!data) return;
-	// SurvFS_SavePlayerData(data);
+	SrvData *data = SurvData_Get((Client *)param);
+	if(data) SurvFS_SavePlayerData(data);
 	SurvData_Free((Client *)param);
 }
 
