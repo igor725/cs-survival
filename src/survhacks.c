@@ -72,6 +72,6 @@ cs_bool SurvHacks_ValidateClick(onPlayerClick *click, SrvData *data) {
 	clickfvec.y = (cs_float)click->tgpos.y;
 	clickfvec.z = (cs_float)click->tgpos.z;
 	if(Client_GetPosition(data->client, &playerpos, NULL))
-		return Math_Distance(&playerpos, &clickfvec) < 6.0f;
+		return Math_Distance(&playerpos, &clickfvec) < 6.5f;
 	else return false;
 }
