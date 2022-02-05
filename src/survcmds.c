@@ -58,8 +58,8 @@ COMMAND_FUNC(Suicide) {
 }
 
 void SurvCmds_Init(void) {
-	COMMAND_ADD(God, CMDF_OP | CMDF_CLIENT);
-	COMMAND_ADD(Hurt, CMDF_CLIENT);
-	COMMAND_ADD(PvP, CMDF_CLIENT);
-	COMMAND_ADD(Suicide, CMDF_CLIENT);
+	COMMAND_ADD(God, CMDF_OP | CMDF_CLIENT, "Toggle god mode");
+	COMMAND_ADD(Hurt, CMDF_CLIENT, "Takes specified ammount of health");
+	COMMAND_ADD(PvP, CMDF_CLIENT, "Toggle PvP mode");
+	COMMAND_ADD(Suicide, CMDF_CLIENT, "Commit suicide");
 }
