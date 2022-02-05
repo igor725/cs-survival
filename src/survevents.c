@@ -149,10 +149,10 @@ static void Survival_OnClick(void *param) {
 
 	if(target) {
 		Vec tgcampos, plcampos;
-		if(Client_GetPosition(target, &tgcampos, NULL) && Client_GetPosition(target, &plcampos, NULL)) {
-			knockback.x = -(plcampos.x - tgcampos.x) * 500.0f;
-			knockback.y = -(plcampos.y - tgcampos.y) * 500.0f;
-			knockback.z = -(plcampos.z - tgcampos.z) * 500.0f;
+		if(Client_GetPosition(target, &tgcampos, NULL) && Client_GetPosition(a->client, &plcampos, NULL)) {
+			knockback.x = -(plcampos.x - tgcampos.x) * 350.0f;
+			knockback.y = -(plcampos.y - tgcampos.y) * 350.0f;
+			knockback.z = -(plcampos.z - tgcampos.z) * 350.0f;
 			tgcampos.y += 1.59375f;
 			plcampos.y += 1.59375f;
 			dist_entity = Math_Distance(&tgcampos, &plcampos);
