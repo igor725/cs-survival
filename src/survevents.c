@@ -176,8 +176,10 @@ static void Survival_OnClick(void *param) {
 			return;
 		}
 		if(data->pvpMode && dataTg->pvpMode) {
-			SurvDmg_Hurt(dataTg, data, 1);
-			Client_SetVelocity(target, &knockback, true);
+			if(!dataTg->godMode) {
+				SurvDmg_Hurt(dataTg, data, 1);
+				Client_SetVelocity(target, &knockback, true);
+			}
 		} else {
 			if(!data->pvpMode)
 				Client_Chat(a->client, 0, "Enable pvp mode (/pvp) first.");
