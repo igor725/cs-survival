@@ -85,6 +85,33 @@ static void Survival_OnDisconnect(void *param) {
 	SurvData_Free((Client *)param);
 }
 
+static void Survival_OnMove(void *param) {
+	Client *client = (Client *)param;
+	SrvData *data = SurvData_Get(client);
+	if(!data || data->godMode) return;
+
+	Vec ppos;
+	cs_float falldamage;
+	if(Client_GetPosition(client, &ppos, NULL)) {
+		switch(Client_GetStandBlock(client)) {
+			case BLOCK_AIR:
+				if(!data->freeFall) {
+					data->fallStart = ppos.y;
+					data->freeFall = true;
+				}
+				break;
+			default:
+				if(data->freeFall) {
+					falldamage = (data->fallStart - ppos.y) / 2.5f;
+					data->freeFall = false;
+					if(falldamage > 1.0f && Client_GetFluidLevel(client) < 1)
+						SurvDmg_Hurt(data, NULL, (cs_byte)falldamage);
+				}
+				break;
+		}
+	}
+}
+
 static void Survival_OnClick(void *param) {
 	onPlayerClick *a = (onPlayerClick *)param;
 	if(a->button != 0) return;
@@ -163,6 +190,7 @@ void SurvEvents_Init(void) {
 	Event_RegisterVoid(EVT_ONSPAWN, Survival_OnSpawn);
 	Event_RegisterVoid(EVT_ONHELDBLOCKCHNG, Survival_OnHeldChange);
 	Event_RegisterBool(EVT_ONBLOCKPLACE, Survival_OnBlockPlace);
+	Event_RegisterVoid(EVT_ONMOVE, Survival_OnMove);
 	Event_RegisterVoid(EVT_ONDISCONNECT, Survival_OnDisconnect);
 	Event_RegisterVoid(EVT_ONHANDSHAKEDONE, Survival_OnHandshake);
 	Event_RegisterVoid(EVT_ONCLICK, Survival_OnClick);

@@ -15,6 +15,8 @@ typedef struct {
 	cs_uint16 inventory[254];
 	SVec lastClick;
 	Vec lastPos;
+	cs_bool freeFall;
+	cs_float fallStart;
 	cs_byte health, oxygen, hackScore;
 	cs_bool showOxygen, godMode, pvpMode;
 	cs_uint16 regenTimer, breakTimer;

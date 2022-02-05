@@ -37,6 +37,18 @@ TIMER_FUNC(FluidTester) {
 	}
 }
 
+TIMER_FUNC(HealthRegen) {
+	(void)left; (void)ticks; (void)ud;
+	for(ClientID id = 0; id < MAX_CLIENTS; id++) {
+		Client *client = Clients_List[id];
+		if(!client || !Client_CheckState(client, PLAYER_STATE_INGAME)) continue;
+		SrvData *data = SurvData_Get(client);
+		if(!data || data->godMode || data->health == SURV_MAX_HEALTH) continue;
+		SurvDmg_Heal(data, 1);
+	}
+}
+
 void SurvTimers_Init(void) {
 	Timer_Add(-1, 1000, FluidTester, NULL);
+	Timer_Add(-1, 2000, HealthRegen, NULL);
 }
