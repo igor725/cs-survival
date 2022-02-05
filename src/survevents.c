@@ -104,7 +104,7 @@ static void Survival_OnMove(void *param) {
 				if(data->freeFall) {
 					falldamage = (data->fallStart - ppos.y) / 2.0f;
 					data->freeFall = false;
-					if(falldamage > 1.0f && Client_GetFluidLevel(client) < 1)
+					if(falldamage > 1.0f && Client_GetFluidLevel(client, NULL) < 1)
 						SurvDmg_Hurt(data, NULL, (cs_byte)falldamage);
 				}
 				break;
