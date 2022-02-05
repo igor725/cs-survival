@@ -11,7 +11,7 @@ void SurvDmg_Hurt(SrvData *target, SrvData *attacker, cs_byte damage) {
 
 	target->health -= min(damage, target->health);
 	if(target->health == 0)
-		SurvDmg_Die(target);
+		SurvDmg_Kill(target);
 	else
 		SurvGui_DrawHealth(target);
 }
@@ -23,7 +23,7 @@ void SurvDmg_Heal(SrvData *target, cs_byte points) {
 	SurvGui_DrawHealth(target);
 }
 
-void SurvDmg_Die(SrvData *target) {
+void SurvDmg_Kill(SrvData *target) {
 	Client_TeleportToSpawn(target->client);
 	SurvInv_Empty(target);
 	SurvInv_Init(target);

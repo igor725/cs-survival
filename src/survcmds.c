@@ -47,8 +47,19 @@ COMMAND_FUNC(PvP) {
 	COMMAND_PRINTF("PvP mode %s", MODE(data->pvpMode));
 }
 
+COMMAND_FUNC(Suicide) {
+	SrvData *data = SurvData_Get(ccdata->caller);
+	if(!data) {
+		COMMAND_PRINT("Something went wrong");
+	}
+
+	SurvDmg_Kill(data);
+	return false;
+}
+
 void SurvCmds_Init(void) {
 	COMMAND_ADD(God, CMDF_OP | CMDF_CLIENT);
 	COMMAND_ADD(Hurt, CMDF_CLIENT);
 	COMMAND_ADD(PvP, CMDF_CLIENT);
+	COMMAND_ADD(Suicide, CMDF_CLIENT);
 }
