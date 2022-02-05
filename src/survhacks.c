@@ -59,10 +59,8 @@ void SurvHacks_Update(SrvData *data) {
 		}
 	}
 
-	if(data->hackScore >= 8) {
+	if(data->hackScore >= 8)
 		Client_Kick(data->client, "Hacked client detected.");
-		data->hackScore = 0;
-	}
 }
 
 cs_bool SurvHacks_ValidateClick(onPlayerClick *click, SrvData *data) {
