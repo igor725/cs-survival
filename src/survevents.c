@@ -177,6 +177,7 @@ static void Survival_OnClick(void *param) {
 		}
 		if(data->pvpMode && dataTg->pvpMode) {
 			if(!dataTg->godMode) {
+				dataTg->hackScore = 0;
 				SurvDmg_Hurt(dataTg, data, 1);
 				Client_SetVelocity(target, &knockback, true);
 			}
