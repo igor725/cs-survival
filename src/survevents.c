@@ -12,16 +12,17 @@
 #include "survbrk.h"
 #include "survfs.h"
 
-static void Survival_OnHandshake(void *param) {
+static cs_bool Survival_OnHandshake(void *param) {
 	Client *client = (Client *)param;
 	if(!Client_GetExtVer(client, EXT_HACKCTRL) ||
 	!Client_GetExtVer(client, EXT_MESSAGETYPE) ||
 	!Client_GetExtVer(client, EXT_PLAYERCLICK) ||
 	!Client_GetExtVer(client, EXT_HELDBLOCK)) {
 		Client_Kick(client, "Your client doesn't support necessary CPE extensions.");
-		return;
+		return false;
 	}
-	SurvData_Create(client);
+
+	return SurvData_Create(client);
 }
 
 static void Survival_OnSpawn(void *param) {
@@ -44,7 +45,7 @@ static cs_bool Survival_OnBlockPlace(void *param) {
 	BlockID id = a->id;
 
 	if(mode == 0x00) {
-		Client_Kick(a->client, "Your client seems to be ignoring the setBlockPermission packet.");
+		Client_Kick(a->client, "Hacked client detected.");
 		return false;
 	}
 
@@ -195,6 +196,6 @@ void SurvEvents_Init(void) {
 	Event_RegisterBool(EVT_ONBLOCKPLACE, Survival_OnBlockPlace);
 	Event_RegisterVoid(EVT_ONMOVE, Survival_OnMove);
 	Event_RegisterVoid(EVT_ONDISCONNECT, Survival_OnDisconnect);
-	Event_RegisterVoid(EVT_ONHANDSHAKEDONE, Survival_OnHandshake);
+	Event_RegisterBool(EVT_ONHANDSHAKEDONE, Survival_OnHandshake);
 	Event_RegisterVoid(EVT_ONCLICK, Survival_OnClick);
 }
