@@ -1,8 +1,6 @@
 #include <core.h>
-#include <platform.h>
 #include <client.h>
 #include <assoc.h>
-#include <config.h>
 #include "survdata.h"
 
 AssocType SurvData_AssocType = -1;
