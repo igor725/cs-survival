@@ -1,13 +1,8 @@
 #include <core.h>
 #include <log.h>
-#include <client.h>
 #include <server.h>
 #include "survdata.h"
-#include "survdmg.h"
-#include "survgui.h"
 #include "survhacks.h"
-#include "survbrk.h"
-#include "survinv.h"
 #include "survcmds.h"
 #include "survevents.h"
 #include "survtimers.h"
@@ -21,7 +16,6 @@ cs_bool Plugin_Load(void) {
 		return false;
 	}
 
-	SurvData_AssocType = Assoc_NewType();
 	SurvFS_Init();
 	SurvCmds_Init();
 	SurvHacks_Init();

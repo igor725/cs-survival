@@ -1,14 +1,12 @@
 #ifndef SURV_DATA_H
 #define SURV_DATA_H
-#include "core.h"
-#include "vector.h"
-#include "client.h"
+#include <core.h>
+#include <vector.h>
+#include <client.h>
 
 #define SURV_MAX_HEALTH 20
 #define SURV_MAX_OXYGEN 10
 #define SURV_MAX_BREAKPRG 10
-
-extern cs_uint16 SurvData_AssocType;
 
 typedef struct {
 	Client *client;
