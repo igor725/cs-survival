@@ -28,12 +28,18 @@ static cs_bool Survival_OnHandshake(void *param) {
 static void Survival_OnSpawn(void *param) {
 	Client *cl = (Client *)param;
 	SrvData *data = SurvData_Get(cl);
-	if(!data) return;
-	Client_GetPosition(cl, &data->lastPos, NULL);
-	SurvFS_LoadPlayerData(data);
-	SurvGui_DrawAll(data);
-	SurvHacks_Set(data);
-	SurvInv_Init(data);
+	if(data) {
+		Client_GetPosition(cl, &data->lastPos, NULL);
+		SurvFS_LoadPlayerData(data);
+		SurvGui_DrawAll(data);
+		SurvHacks_Set(data);
+		SurvInv_Init(data);
+	}
+}
+
+static void Survival_OnDespawn(void *param) {
+	SrvData *data = SurvData_Get((Client *)param);
+	if(data) SurvFS_SavePlayerData(data);
 }
 
 static cs_bool Survival_OnBlockPlace(void *param) {
@@ -78,12 +84,6 @@ static void Survival_OnTick(void *param) {
 			SurvHacks_Update(data);
 		}
 	}
-}
-
-static void Survival_OnDisconnect(void *param) {
-	SrvData *data = SurvData_Get((Client *)param);
-	if(data) SurvFS_SavePlayerData(data);
-	SurvData_Free((Client *)param);
 }
 
 static void Survival_OnMove(void *param) {
@@ -189,13 +189,18 @@ static void Survival_OnClick(void *param) {
 	}
 }
 
+EventRegBunch events[] = {
+	{'v', EVT_ONTICK, (void *)Survival_OnTick},
+	{'v', EVT_ONSPAWN, (void *)Survival_OnSpawn},
+	{'v', EVT_ONDESPAWN, (void *)Survival_OnDespawn},
+	{'v', EVT_ONHELDBLOCKCHNG, (void *)Survival_OnHeldChange},
+	{'b', EVT_ONBLOCKPLACE, (void *)Survival_OnBlockPlace},
+	{'v', EVT_ONMOVE, (void *)Survival_OnMove},
+	{'v', EVT_ONDISCONNECT, (void *)SurvData_Free},
+	{'b', EVT_ONHANDSHAKEDONE, (void *)Survival_OnHandshake},
+	{'v', EVT_ONCLICK, (void *)Survival_OnClick}
+};
+
 void SurvEvents_Init(void) {
-	Event_RegisterVoid(EVT_ONTICK, Survival_OnTick);
-	Event_RegisterVoid(EVT_ONSPAWN, Survival_OnSpawn);
-	Event_RegisterVoid(EVT_ONHELDBLOCKCHNG, Survival_OnHeldChange);
-	Event_RegisterBool(EVT_ONBLOCKPLACE, Survival_OnBlockPlace);
-	Event_RegisterVoid(EVT_ONMOVE, Survival_OnMove);
-	Event_RegisterVoid(EVT_ONDISCONNECT, Survival_OnDisconnect);
-	Event_RegisterBool(EVT_ONHANDSHAKEDONE, Survival_OnHandshake);
-	Event_RegisterVoid(EVT_ONCLICK, Survival_OnClick);
+	Event_RegisterBunch(events);
 }

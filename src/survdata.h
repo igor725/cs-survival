@@ -10,7 +10,7 @@
 
 typedef struct {
 	Client *client;
-	cs_uint16 inventory[254];
+	cs_uint16 inventory[256];
 	SVec lastClick;
 	Vec lastPos;
 	cs_bool freeFall;
