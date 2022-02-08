@@ -203,7 +203,8 @@ EventRegBunch events[] = {
 	{'v', EVT_ONMOVE, (void *)Survival_OnMove},
 	{'v', EVT_ONDISCONNECT, (void *)SurvData_Free},
 	{'b', EVT_ONHANDSHAKEDONE, (void *)Survival_OnHandshake},
-	{'v', EVT_ONCLICK, (void *)Survival_OnClick}
+	{'v', EVT_ONCLICK, (void *)Survival_OnClick},
+	{0, 0, NULL}
 };
 
 void SurvEvents_Init(void) {
