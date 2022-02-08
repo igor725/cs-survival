@@ -22,7 +22,14 @@ static cs_bool Survival_OnHandshake(void *param) {
 		return false;
 	}
 
-	return SurvData_Create(client);
+	SrvData *data = SurvData_Create(client);
+	if(data) {
+		SurvFS_LoadPlayerData(data);
+		SurvInv_Init(data);
+		return true;
+	}
+
+	return false;
 }
 
 static void Survival_OnSpawn(void *param) {
@@ -30,10 +37,8 @@ static void Survival_OnSpawn(void *param) {
 	SrvData *data = SurvData_Get(cl);
 	if(data) {
 		Client_GetPosition(cl, &data->lastPos, NULL);
-		SurvFS_LoadPlayerData(data);
 		SurvGui_DrawAll(data);
 		SurvHacks_Set(data);
-		SurvInv_Init(data);
 	}
 }
 

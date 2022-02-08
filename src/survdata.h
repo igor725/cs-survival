@@ -10,7 +10,7 @@
 
 typedef struct {
 	Client *client;
-	cs_uint16 inventory[256];
+	cs_uint16 inventory[255];
 	SVec lastClick;
 	Vec lastPos;
 	cs_bool freeFall;
@@ -23,7 +23,7 @@ typedef struct {
 	BlockID breakBlock;
 } SrvData;
 
-cs_bool SurvData_Create(Client *client);
+SrvData *SurvData_Create(Client *client);
 void SurvData_Free(Client *client);
 SrvData *SurvData_Get(Client *client);
 SrvData *SurvData_GetByID(ClientID id);

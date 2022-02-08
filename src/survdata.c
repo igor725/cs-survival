@@ -5,10 +5,10 @@
 
 AssocType SurvData_AssocType = -1;
 
-cs_bool SurvData_Create(Client *client) {
+SrvData *SurvData_Create(Client *client) {
 	if(SurvData_AssocType < 0) {
 		SurvData_AssocType = Assoc_NewType(ASSOC_BIND_CLIENT);
-		if(SurvData_AssocType < 0) return false;
+		if(SurvData_AssocType < 0) return NULL;
 	}
 
 	SrvData *ptr = Assoc_AllocFor(client, SurvData_AssocType, 1, sizeof(SrvData));
@@ -16,10 +16,10 @@ cs_bool SurvData_Create(Client *client) {
 		ptr->health = SURV_MAX_HEALTH;
 		ptr->oxygen = SURV_MAX_OXYGEN;
 		ptr->client = client;
-		return true;
+		return ptr;
 	}
 
-	return false;
+	return NULL;
 }
 
 void SurvData_Free(Client *client) {
