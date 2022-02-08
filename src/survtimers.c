@@ -14,10 +14,10 @@ TIMER_FUNC(LavaDamage) {
 		SrvData *data = SurvData_Get(client);
 		if(!data || data->godMode) continue;
 
-		BlockID block ;
+		BlockID block;
 		if(Client_GetFluidLevel(client, &block) > 0)
 			if(block >= BLOCK_LAVA && block <= BLOCK_LAVA_STILL)
-				SurvDmg_Hurt(data, NULL, 1);
+				SurvDmg_Kill(data);
 	}	
 }
 
