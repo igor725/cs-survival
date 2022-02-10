@@ -23,7 +23,7 @@ typedef struct {
 	BlockID breakBlock;
 } SrvData;
 
-SrvData *SurvData_Create(Client *client);
+cs_bool SurvData_Create(Client *client);
 void SurvData_Free(Client *client);
 SrvData *SurvData_Get(Client *client);
 SrvData *SurvData_GetByID(ClientID id);

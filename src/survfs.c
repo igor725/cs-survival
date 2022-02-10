@@ -94,10 +94,8 @@ cs_bool SurvFS_SavePlayerData(SrvData *data) {
 		if(ext) {
 			String_Copy(ext, 5, ".tmp");
 			cs_file handle = File_Open(tmppath, "wb");
-			if(WritePlayerData(data, handle)) {
-				File_Rename(tmppath, filepath);
-				return true;
-			}
+			if(WritePlayerData(data, handle))
+				return File_Rename(tmppath, filepath);
 		}
 	}
 
