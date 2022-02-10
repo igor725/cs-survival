@@ -13,14 +13,14 @@ void SurvInv_Init(SrvData *data) {
 }
 
 void SurvInv_Empty(SrvData *data) {
-	for(BlockID i = 1; i < 255; i++)
+	for(cs_uint16 i = 1; i <= 255; i++)
 		data->inventory[i] = 0;
 }
 
 void SurvInv_UpdateInventory(SrvData *data) {
 	cs_byte invIdx = 0;
 
-	for(BlockID i = 1; i < 255; i++) {
+	for(cs_uint16 i = 1; i <= 255; i++) {
 		cs_bool mz = data->inventory[i] > 0 || data->godMode;
 		Client_SetBlockPerm(data->client, i, mz, data->godMode);
 		if(mz)
