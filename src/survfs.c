@@ -35,7 +35,7 @@ INL static cs_bool ReadPlayerData(SrvData *data, cs_file handle) {
 	cs_uint32 header = 0;
 	Vec position;
 	Ang angle;
-	
+
 	READ_ENTRY(header);
 	allok = (header == SURVFS_MAGIC);
 	READ_ENTRY(data->pvpMode);
@@ -71,7 +71,7 @@ INL static cs_bool WritePlayerData(SrvData *data, cs_file handle) {
 	cs_bool allok = true;
 	cs_uint32 header = SURVFS_MAGIC;
 	Vec position; Ang angle;
-	
+
 	allok = Client_GetPosition(data->client, &position, &angle);
 	WRITE_ENTRY(header);
 	WRITE_ENTRY(data->pvpMode);

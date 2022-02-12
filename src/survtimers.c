@@ -18,7 +18,7 @@ TIMER_FUNC(LavaDamage) {
 		if(Client_GetFluidLevel(client, &block) > 0)
 			if(block >= BLOCK_LAVA && block <= BLOCK_LAVA_STILL)
 				SurvDmg_Kill(data);
-	}	
+	}
 }
 
 TIMER_FUNC(FluidTester) {
