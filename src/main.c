@@ -27,7 +27,7 @@ static SurvItf SuvivalController = {
 Plugin_DeclareInterfaces(2) {
 	PLUGIN_IFACE_ADD(SURV_ITF_NAME, SuvivalController)
 
-	PLUGIN_IFACE_DONE
+	PLUGIN_IFACE_END
 };
 
 cs_bool Plugin_Load(void) {
