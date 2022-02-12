@@ -24,7 +24,7 @@ static SurvItf SuvivalController = {
 	.kill = SurvDmg_Kill
 };
 
-EXP PluginInterface Plugin_Interfaces[] = {
+Plugin_DeclareInterfaces(2) {
 	PLUGIN_IFACE_ADD(SURV_ITF_NAME, SuvivalController)
 
 	PLUGIN_IFACE_DONE
