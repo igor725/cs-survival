@@ -143,10 +143,10 @@ static void Survival_OnClick(void *param) {
 	if(!Vec_IsInvalid(blockPos)) {
 		Vec blockcenter;
 		blockcenter.x = blockPos->x + 0.5f;
-		blockcenter.y = blockPos->y + 2.1f;
+		blockcenter.y = blockPos->y - 0.5f;
 		blockcenter.z = blockPos->z + 0.5f;
 		dist_block = Math_Distance(&blockcenter, &playerpos);
-		if(dist_block - dist_max > 1.0f) goto hackdetected;
+		if(dist_block - dist_max > 1.5f) goto hackdetected;
 	}
 
 	if(target) {
