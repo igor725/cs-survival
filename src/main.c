@@ -1,14 +1,34 @@
 #include <core.h>
 #include <log.h>
 #include <server.h>
+#include <plugin.h>
 #include "survdata.h"
 #include "survhacks.h"
 #include "survcmds.h"
 #include "survevents.h"
 #include "survtimers.h"
 #include "survfs.h"
+#include "survitf.h"
+#include "str.h"
 
 Plugin_SetVersion(1)
+
+static SurvItf SuvivalController = {
+	.getSrvData = SurvData_Get,
+	.redrawGUI = SurvGui_DrawAll,
+	.getBlockCount = SurvInv_Get,
+	.giveToInventory = SurvInv_Add,
+	.takeFromInventory = SurvInv_Take,
+	.hurt = SurvDmg_Hurt,
+	.heal = SurvDmg_Heal,
+	.kill = SurvDmg_Kill
+};
+
+EXP PluginInterface Plugin_Interfaces[] = {
+	PLUGIN_IFACE_ADD("SurvivalController_v1", SuvivalController)
+
+	PLUGIN_IFACE_DONE
+};
 
 cs_bool Plugin_Load(void) {
 	if(Server_Ready) {
