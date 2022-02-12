@@ -25,7 +25,7 @@ static SurvItf SuvivalController = {
 };
 
 EXP PluginInterface Plugin_Interfaces[] = {
-	PLUGIN_IFACE_ADD("SurvivalController_v1", SuvivalController)
+	PLUGIN_IFACE_ADD(SURV_ITF_NAME, SuvivalController)
 
 	PLUGIN_IFACE_DONE
 };

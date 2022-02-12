@@ -6,6 +6,8 @@
 #include "survgui.h"
 #include "survdmg.h"
 
+#define SURV_ITF_NAME "SurvivalController_v1"
+
 typedef struct _SurvItf {
 	SrvData *(*getSrvData)(Client *client);
 
