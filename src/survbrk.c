@@ -44,7 +44,7 @@ void SurvBrk_Done(SrvData *data) {
 
 	SurvInv_Add(data, id, 1);
 	if(!Client_GetHeldBlock(data->client))
-		Client_SetHeld(data->client, id, false);
+		Client_SetHeldBlock(data->client, id, false);
 	SurvGui_DrawBlockInfo(data, id);
 	World_SetBlock(world, pos, BLOCK_AIR);
 	UpdateBlock(world, pos, BLOCK_AIR);

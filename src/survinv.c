@@ -39,7 +39,7 @@ cs_uint16 SurvInv_Add(SrvData *data, BlockID id, cs_uint16 count) {
 		inv[id] = newC;
 		if(old < 1) {
 			SurvInv_UpdateInventory(data);
-			Client_SetHeld(data->client, id, false);
+			Client_SetHeldBlock(data->client, id, false);
 		}
 		return newC - old;
 	}
@@ -59,7 +59,7 @@ cs_uint16 SurvInv_Take(SrvData *data, BlockID id, cs_uint16 count) {
 		inv[id] = newC;
 		if(newC == 0) {
 			SurvInv_UpdateInventory(data);
-			Client_SetHeld(data->client, BLOCK_AIR, false);
+			Client_SetHeldBlock(data->client, BLOCK_AIR, false);
 		}
 		return old - newC;
 	}

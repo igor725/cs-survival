@@ -124,8 +124,9 @@ static void Survival_OnClick(void *param) {
 		return;
 	}
 
-	if(!SurvHacks_ValidateClick(a, data)) {
-		Client_Kick(a->client, "Click hack detected!");
+	Vec playerpos;
+	if(!Client_GetPosition(a->client, &playerpos, NULL)) {
+		Client_Kick(a->client, "Internal error");
 		return;
 	}
 
@@ -134,28 +135,28 @@ static void Survival_OnClick(void *param) {
 	Client *target = Client_GetByID(a->tgid);
 	SrvData *dataTg = NULL;
 	if(target) dataTg = SurvData_Get(target);
+	cs_float dist_max = Client_GetClickDistanceInBlocks(a->client);
 
 	float dist_entity = 32768.0f;
 	float dist_block = 32768.0f;
 
 	if(!Vec_IsInvalid(blockPos)) {
-		Vec blockcenter, playerpos;
-		blockcenter.x = blockPos->x + .5f;
-		blockcenter.y = blockPos->y + .5f;
-		blockcenter.z = blockPos->z + .5f;
-		if(Client_GetPosition(a->client, &playerpos, NULL))
-			dist_block = Math_Distance(&blockcenter, &playerpos);
+		Vec blockcenter;
+		blockcenter.x = blockPos->x + 0.5f;
+		blockcenter.y = blockPos->y + 2.1f;
+		blockcenter.z = blockPos->z + 0.5f;
+		dist_block = Math_Distance(&blockcenter, &playerpos);
+		if(dist_block - dist_max > 1.0f) goto hackdetected;
 	}
 
 	if(target) {
-		Vec tgcampos, plcampos;
-		if(Client_GetPosition(target, &tgcampos, NULL) && Client_GetPosition(a->client, &plcampos, NULL)) {
-			knockback.x = -(plcampos.x - tgcampos.x) * 350.0f;
-			knockback.y = -(plcampos.y - tgcampos.y) * 350.0f;
-			knockback.z = -(plcampos.z - tgcampos.z) * 350.0f;
-			tgcampos.y += 1.59375f;
-			plcampos.y += 1.59375f;
-			dist_entity = Math_Distance(&tgcampos, &plcampos);
+		Vec tgcampos;
+		if(Client_GetPosition(target, &tgcampos, NULL)) {
+			knockback.x = -(playerpos.x - tgcampos.x) * 350.0f;
+			knockback.y = -(playerpos.y - tgcampos.y) * 350.0f;
+			knockback.z = -(playerpos.z - tgcampos.z) * 350.0f;
+			dist_entity = Math_Distance(&tgcampos, &playerpos);
+			if(dist_entity > dist_max) dist_entity = 32768.0f;
 		}
 	}
 
@@ -164,13 +165,13 @@ static void Survival_OnClick(void *param) {
 		return;
 	}
 
-	if(dist_block < dist_entity && dist_block < 4) {
+	if(dist_block < dist_entity && dist_block < dist_max) {
 		if(!data->breakStarted) {
 			BlockID bid = World_GetBlock(Client_GetWorld(a->client), blockPos);
 			if(bid > BLOCK_AIR) SurvBrk_Start(data, bid);
 		}
 		data->lastClick = *blockPos;
-	} else if(dist_entity < dist_block && dist_entity < 3.5) {
+	} else if(dist_entity < dist_block && dist_entity < dist_max) {
 		if(data->breakStarted) {
 			SurvBrk_Stop(data);
 			return;
@@ -186,6 +187,10 @@ static void Survival_OnClick(void *param) {
 				Client_Chat(a->client, 0, "Enable pvp mode (/pvp) first.");
 		}
 	}
+
+	return;
+	hackdetected:
+	Client_Kick(a->client, "Click hack detected!");
 }
 
 EventRegBunch events[] = {

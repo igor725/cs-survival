@@ -62,12 +62,3 @@ void SurvHacks_Update(SrvData *data) {
 	if(data->hackScore >= 8)
 		Client_Kick(data->client, "Hacked client detected.");
 }
-
-cs_bool SurvHacks_ValidateClick(onPlayerClick *click, SrvData *data) {
-	if(Vec_IsInvalid(&click->tgpos)) return true;
-	Vec clickfvec, playerpos;
-	Vec_Copy(clickfvec, click->tgpos);
-	if(Client_GetPosition(data->client, &playerpos, NULL))
-		return Math_Distance(&playerpos, &clickfvec) < 6.5f;
-	else return false;
-}
