@@ -27,6 +27,7 @@ void SurvData_Free(Client *client) {
 }
 
 SrvData *SurvData_Get(Client *client) {
+	if(!client) return NULL;
 	return Assoc_GetPtr(client, SurvData_AssocType);
 }
 
