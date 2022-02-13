@@ -26,30 +26,36 @@ COMMAND_FUNC(God) {
 		COMMAND_PRINTF("God mode %s", MODE(data->godMode));
 	}
 
-	COMMAND_PRINT("User not found");
+	COMMAND_PRINT("Player not found");
 }
 
 COMMAND_FUNC(Hurt) {
+	COMMAND_SETUSAGE("/hurt [player name] <damage>");
+
 	cs_char username[64], damage[32];
-	SrvData *data = SurvData_Get(ccdata->caller);
+	Client *target = ccdata->caller;
+	SrvData *data = SurvData_Get(target);
 	cs_uint32 argoffset = 0;
 
 	if(String_CountArguments(ccdata->args) > 1) {
-		COMMAND_TESTOP();
-
 		if(COMMAND_GETARG(username, 64, argoffset)) {
-			Client *target = Client_GetByName(username);
+			target = Client_GetByName(username);
 			data = SurvData_Get(target);
 			argoffset++;
+
+			if(target != ccdata->caller) {
+				COMMAND_TESTOP();
+			}
 		}
 	}
 
 	if(data && COMMAND_GETARG(damage, 32, argoffset)){
 		cs_byte dmg = (cs_byte)(String_ToFloat(damage) * 2);
 		SurvDmg_Hurt(data, NULL, dmg);
+		COMMAND_PRINTF("Player %s is damaged", Client_GetName(target));
 	}
 
-	COMMAND_PRINT("User not found");
+	COMMAND_PRINTUSAGE;
 }
 
 COMMAND_FUNC(PvP) {
