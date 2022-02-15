@@ -30,7 +30,8 @@ static void Survival_OnSpawn(void *param) {
 	Client *cl = (Client *)param;
 	SrvData *data = SurvData_Get(cl);
 	if(data) {
-		SurvFS_LoadPlayerData(data);
+		if(!SurvFS_LoadPlayerData(data))
+			Client_Chat(cl, MESSAGE_TYPE_CHAT, "&cLooks like your survival saved data is corrupted.");
 		SurvGui_DrawAll(data);
 		SurvHacks_Update(data);
 		SurvInv_Init(data);

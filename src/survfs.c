@@ -59,7 +59,10 @@ cs_bool SurvFS_LoadPlayerData(SrvData *data) {
 	cs_char filepath[FILENAME_MAX];
 	if(GetFilePathFor(data->client, filepath, FILENAME_MAX)) {
 		cs_file handle = File_Open(filepath, "rb");
-		if(handle) return ReadPlayerData(data, handle);
+		if(handle)
+			return ReadPlayerData(data, handle);
+		else
+			return Thread_GetError() == ENOENT;
 	}
 
 	return false;
