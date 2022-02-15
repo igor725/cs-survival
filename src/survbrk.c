@@ -1,4 +1,5 @@
 #include <core.h>
+#include <world.h>
 #include <client.h>
 #include <block.h>
 #include "survdata.h"

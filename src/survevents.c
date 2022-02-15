@@ -1,4 +1,5 @@
 #include <core.h>
+#include <world.h>
 #include <event.h>
 #include <client.h>
 #include <protocol.h>
