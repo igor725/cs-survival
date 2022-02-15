@@ -15,10 +15,18 @@ Plugin_SetVersion(1)
 
 static SurvItf SuvivalController = {
 	.getSrvData = SurvData_Get,
-	.redrawGUI = SurvGui_DrawAll,
+
+	.updateInventory = SurvInv_UpdateInventory,
 	.getBlockCount = SurvInv_Get,
 	.giveToInventory = SurvInv_Add,
 	.takeFromInventory = SurvInv_Take,
+
+	.isInGodMode = SurvDmg_GetGod,
+	.isInPvPMode = SurvDmg_GetPvP,
+
+	.setPvPMode = SurvDmg_SetPvP,
+	.setGodMode = SurvDmg_SetGod,
+
 	.hurt = SurvDmg_Hurt,
 	.heal = SurvDmg_Heal,
 	.kill = SurvDmg_Kill

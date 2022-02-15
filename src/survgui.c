@@ -78,4 +78,11 @@ void SurvGui_DrawBlockInfo(SrvData *data, BlockID id) {
 void SurvGui_DrawAll(SrvData *data) {
 	SurvGui_DrawHealth(data);
 	SurvGui_DrawOxygen(data);
+	EMesgType type = data->showOxygen ? MESSAGE_TYPE_STATUS3 : MESSAGE_TYPE_STATUS2;
+	if(!data->showOxygen && data->pvpMode)
+		Client_Chat(data->client, MESSAGE_TYPE_STATUS3, "");
+	if(data->pvpMode && !data->godMode)
+		Client_Chat(data->client, type, "&cPvP");
+	else
+		Client_Chat(data->client, type, "");
 }

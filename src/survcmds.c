@@ -2,7 +2,6 @@
 #include <command.h>
 #include "survcmds.h"
 #include "survdata.h"
-#include "survhacks.h"
 #include "survgui.h"
 #include "survinv.h"
 #include "survdmg.h"
@@ -18,12 +17,9 @@ COMMAND_FUNC(God) {
 	}
 
 	if(data) {
-		data->godMode ^= 1;
-		SurvHacks_Set(data);
-		SurvGui_DrawAll(data);
-		SurvInv_UpdateInventory(data);
-		SurvGui_DrawBlockInfo(data, data->godMode ? 0 : Client_GetHeldBlock(target));
-		COMMAND_PRINTF("God mode %s", MODE(data->godMode));
+		cs_bool state = SurvDmg_GetGod(data) ^ 1;
+		SurvDmg_SetGod(data, state);
+		COMMAND_PRINTF("God mode %s", MODE(state));
 	}
 
 	COMMAND_PRINT("Player not found");

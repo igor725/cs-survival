@@ -32,7 +32,7 @@ static void Survival_OnSpawn(void *param) {
 	if(data) {
 		SurvFS_LoadPlayerData(data);
 		SurvGui_DrawAll(data);
-		SurvHacks_Set(data);
+		SurvHacks_Update(data);
 		SurvInv_Init(data);
 	}
 }
@@ -81,7 +81,7 @@ static void Survival_OnTick(void *param) {
 		if(data) {
 			if(data->breakStarted)
 				SurvBrk_Tick(data, delta);
-			SurvHacks_Update(data);
+			SurvHacks_Test(data);
 		}
 	}
 }

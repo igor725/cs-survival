@@ -20,7 +20,7 @@ void SurvHacks_Init(void) {
 	Timer_Add(-1, 2000, HackScore, NULL);
 }
 
-void SurvHacks_Set(SrvData *data) {
+void SurvHacks_Update(SrvData *data) {
 	CPEHacks hacks;
 
 	hacks.tpv = true;
@@ -40,7 +40,7 @@ void SurvHacks_Set(SrvData *data) {
 	Client_SendHacks(data->client, &hacks);
 }
 
-void SurvHacks_Update(SrvData *data) {
+void SurvHacks_Test(SrvData *data) {
 	if(data->godMode) return;
 	if(data->hackScore < 10) {
 		Vec playerPos;
