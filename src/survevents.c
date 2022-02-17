@@ -14,16 +14,16 @@
 #include "survfs.h"
 
 static cs_bool Survival_OnHandshake(void *param) {
-	Client *client = (Client *)param;
-	if(!Client_GetExtVer(client, EXT_HACKCTRL) ||
-	!Client_GetExtVer(client, EXT_MESSAGETYPE) ||
-	!Client_GetExtVer(client, EXT_PLAYERCLICK) ||
-	!Client_GetExtVer(client, EXT_HELDBLOCK)) {
-		Client_Kick(client, "Your client doesn't support necessary CPE extensions.");
+	onHandshakeDone *a = (onHandshakeDone *)param;
+	if(!Client_GetExtVer(a->client, EXT_HACKCTRL) ||
+	!Client_GetExtVer(a->client, EXT_MESSAGETYPE) ||
+	!Client_GetExtVer(a->client, EXT_PLAYERCLICK) ||
+	!Client_GetExtVer(a->client, EXT_HELDBLOCK)) {
+		Client_Kick(a->client, "Your client doesn't support necessary CPE extensions.");
 		return false;
 	}
 
-	return SurvData_Create(client);
+	return SurvData_Create(a->client);
 }
 
 static void Survival_OnSpawn(void *param) {
