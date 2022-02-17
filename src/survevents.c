@@ -44,11 +44,12 @@ static void Survival_OnSpawn(void *param) {
 	SrvData *data = SurvData_Get(a->client);
 
 	if(data) {
-		String_Copy(data->lastWorld, 65, World_GetName(Client_GetWorld(data->client)));
-		if(data->loadSucc) {
+		cs_str wname = World_GetName(Client_GetWorld(data->client));
+		if(data->loadSucc && String_Compare(wname, data->lastWorld)) {
 			*a->position = data->lastPos;
 			*a->angle = data->lastAng;
-		}
+		} else
+			String_Copy(data->lastWorld, 65, wname);
 		SurvGui_DrawAll(data);
 		SurvHacks_Update(data);
 		SurvInv_Init(data);
