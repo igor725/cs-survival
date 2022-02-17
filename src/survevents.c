@@ -31,7 +31,6 @@ static cs_bool Survival_OnHandshake(void *param) {
 		Client_Chat(a->client, MESSAGE_TYPE_CHAT, "&cLooks like your survival saved data is corrupted.");
 		SurvData_Reset(data);
 	} else {
-		Log_Info("Teleporting %.3f, %.3f, %.3f", data->lastPos.x, data->lastPos.y, data->lastPos.z);
 		World *world = World_GetByName(data->lastWorld);
 		if(world) a->world = world;
 		else data->loadSucc = false;
