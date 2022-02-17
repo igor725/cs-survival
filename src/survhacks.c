@@ -40,23 +40,19 @@ void SurvHacks_Update(SrvData *data) {
 	Client_SendHacks(data->client, &hacks);
 }
 
-void SurvHacks_Test(SrvData *data) {
-	if(data->godMode) return;
+void SurvHacks_Test(SrvData *data, Vec *playerPos) {
 	if(data->hackScore < 10) {
-		Vec playerPos;
-		if(Client_GetPosition(data->client, &playerPos, NULL)) {
-			cs_float *ppt = (cs_float *)&playerPos,
-			*lpt = (cs_float *)&data->lastPos;
-			for(cs_uint32 i = 0; i < 3; i++) {
-				cs_float tmp = ppt[i] - lpt[i];
-				if(tmp < 0 && i != 1) tmp *= -1;
-				if(tmp > 1.5f) {
-					data->hackScore += 1;
-					break;
-				}
+		cs_float *ppt = (cs_float *)playerPos,
+		*lpt = (cs_float *)&data->lastPos;
+		for(cs_uint32 i = 0; i < 3; i++) {
+			cs_float tmp = ppt[i] - lpt[i];
+			if(tmp < 0 && i != 1) tmp *= -1;
+			if(tmp > 1.5f) {
+				data->hackScore += 1;
+				break;
 			}
-			data->lastPos = playerPos;
 		}
+		data->lastPos = *playerPos;
 	}
 
 	if(data->hackScore >= 8)

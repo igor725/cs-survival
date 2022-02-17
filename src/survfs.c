@@ -1,5 +1,6 @@
 #include <core.h>
 #include <str.h>
+#include <world.h>
 #include <client.h>
 #include <platform.h>
 #include "survdata.h"
@@ -33,23 +34,18 @@ INL static cs_bool GetFilePathFor(Client *client, cs_char *path, cs_size len) {
 INL static cs_bool ReadPlayerData(SrvData *data, cs_file handle) {
 	cs_bool allok = true;
 	cs_uint32 header = 0;
-	Vec position;
-	Ang angle;
 
 	READ_ENTRY(header);
 	allok = (header == SURVFS_MAGIC);
+	READ_ENTRY(data->lastWorld);
 	READ_ENTRY(data->pvpMode);
 	READ_ENTRY(data->godMode);
 	READ_ENTRY(data->health);
 	READ_ENTRY(data->oxygen);
-	READ_ENTRY(position);
-	READ_ENTRY(angle);
+	READ_ENTRY(data->lastPos);
+	READ_ENTRY(data->lastAng);
 	READ_ENTRY(data->inventory);
-
-	if(allok) {
-		Client_TeleportTo(data->client, &position, &angle);
-		data->lastPos = position;
-	}
+	data->loadSucc = allok;
 
 	File_Close(handle);
 	return allok;
@@ -73,10 +69,11 @@ cs_bool SurvFS_LoadPlayerData(SrvData *data) {
 INL static cs_bool WritePlayerData(SrvData *data, cs_file handle) {
 	cs_bool allok = true;
 	cs_uint32 header = SURVFS_MAGIC;
-	Vec position; Ang angle;
+	Vec position = {0}; Ang angle = {0};
 
 	allok = Client_GetPosition(data->client, &position, &angle);
 	WRITE_ENTRY(header);
+	WRITE_ENTRY(data->lastWorld);
 	WRITE_ENTRY(data->pvpMode);
 	WRITE_ENTRY(data->godMode);
 	WRITE_ENTRY(data->health);

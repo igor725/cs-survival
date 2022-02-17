@@ -10,9 +10,12 @@
 
 typedef struct {
 	Client *client;
+	cs_char lastWorld[65];
 	cs_uint16 inventory[256];
 	SVec lastClick;
+	Ang lastAng;
 	Vec lastPos;
+	cs_bool loadSucc;
 	cs_bool freeFall;
 	cs_float fallStart;
 	cs_byte health, oxygen, hackScore;
@@ -23,7 +26,8 @@ typedef struct {
 	BlockID breakBlock;
 } SrvData;
 
-cs_bool SurvData_Create(Client *client);
+SrvData *SurvData_Create(Client *client);
+void SurvData_Reset(SrvData *data);
 void SurvData_Free(Client *client);
 SrvData *SurvData_Get(Client *client);
 SrvData *SurvData_GetByID(ClientID id);

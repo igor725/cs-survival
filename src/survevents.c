@@ -1,4 +1,5 @@
 #include <core.h>
+#include <str.h>
 #include <world.h>
 #include <event.h>
 #include <client.h>
@@ -23,15 +24,32 @@ static cs_bool Survival_OnHandshake(void *param) {
 		return false;
 	}
 
-	return SurvData_Create(a->client);
+	SrvData *data = SurvData_Create(a->client);
+	if(data == NULL) return false;
+
+	if(!SurvFS_LoadPlayerData(data)) {
+		Client_Chat(a->client, MESSAGE_TYPE_CHAT, "&cLooks like your survival saved data is corrupted.");
+		SurvData_Reset(data);
+	} else {
+		Log_Info("Teleporting %.3f, %.3f, %.3f", data->lastPos.x, data->lastPos.y, data->lastPos.z);
+		World *world = World_GetByName(data->lastWorld);
+		if(world) a->world = world;
+		else data->loadSucc = false;
+	}
+
+	return true;
 }
 
 static void Survival_OnSpawn(void *param) {
-	Client *cl = (Client *)param;
-	SrvData *data = SurvData_Get(cl);
+	onSpawn *a = (onSpawn *)param;
+	SrvData *data = SurvData_Get(a->client);
+
 	if(data) {
-		if(!SurvFS_LoadPlayerData(data))
-			Client_Chat(cl, MESSAGE_TYPE_CHAT, "&cLooks like your survival saved data is corrupted.");
+		String_Copy(data->lastWorld, 65, World_GetName(Client_GetWorld(data->client)));
+		if(data->loadSucc) {
+			*a->position = data->lastPos;
+			*a->angle = data->lastAng;
+		}
 		SurvGui_DrawAll(data);
 		SurvHacks_Update(data);
 		SurvInv_Init(data);
@@ -79,11 +97,8 @@ static void Survival_OnTick(void *param) {
 	cs_int32 delta = *(cs_int32 *)param;
 	for(ClientID i = 0; i < MAX_CLIENTS; i++) {
 		SrvData *data = SurvData_GetByID(i);
-		if(data) {
-			if(data->breakStarted)
-				SurvBrk_Tick(data, delta);
-			SurvHacks_Test(data);
-		}
+		if(data && Client_CheckState(data->client, PLAYER_STATE_INGAME))
+			if(data->breakStarted) SurvBrk_Tick(data, delta);
 	}
 }
 
@@ -92,9 +107,10 @@ static void Survival_OnMove(void *param) {
 	SrvData *data = SurvData_Get(client);
 	if(!data || data->godMode) return;
 
-	Vec ppos;
+	Vec ppos; Ang pang;
 	cs_float falldamage;
-	if(Client_GetPosition(client, &ppos, NULL)) {
+	if(Client_GetPosition(client, &ppos, &pang)) {
+		SurvHacks_Test(data, &ppos);
 		switch(Client_GetStandBlock(client)) {
 			case BLOCK_AIR:
 				if(!data->freeFall) {
