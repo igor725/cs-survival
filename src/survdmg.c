@@ -15,6 +15,7 @@ cs_bool SurvDmg_GetPvP(SrvData *data) {
 }
 
 void SurvDmg_SetGod(SrvData *data, cs_bool state) {
+	if(data->craftMode) return;
 	data->godMode = state;
 	SurvHacks_Update(data);
 	SurvGui_DrawAll(data);

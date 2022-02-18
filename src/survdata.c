@@ -12,12 +12,13 @@ SrvData *SurvData_Create(Client *client) {
 		if(SurvData_AssocType < 0) return NULL;
 	}
 
-	SrvData *ptr = Assoc_AllocFor(client, SurvData_AssocType, 1, sizeof(SrvData));
-	if(ptr) {
-		ptr->health = SURV_MAX_HEALTH;
-		ptr->oxygen = SURV_MAX_OXYGEN;
-		ptr->client = client;
-		return ptr;
+	SrvData *data = Assoc_AllocFor(client, SurvData_AssocType, 1, sizeof(SrvData));
+	if(data) {
+		data->health = SURV_MAX_HEALTH;
+		data->oxygen = SURV_MAX_OXYGEN;
+		data->craftHelp = true;
+		data->client = client;
+		return data;
 	}
 
 	return NULL;
@@ -27,6 +28,7 @@ void SurvData_Reset(SrvData *data) {
 	data->health = SURV_MAX_HEALTH;
 	data->oxygen = SURV_MAX_OXYGEN;
 	*data->lastWorld = '\0';
+	data->craftHelp = true;
 	data->pvpMode = false;
 	data->godMode = false;
 	SurvInv_Empty(data);

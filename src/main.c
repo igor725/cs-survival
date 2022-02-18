@@ -1,4 +1,5 @@
 #include <core.h>
+#include <str.h>
 #include <log.h>
 #include <server.h>
 #include <plugin.h>
@@ -9,7 +10,7 @@
 #include "survtimers.h"
 #include "survfs.h"
 #include "survitf.h"
-#include "str.h"
+#include "survcraft.h"
 
 Plugin_SetVersion(1)
 
@@ -47,6 +48,7 @@ cs_bool Plugin_Load(void) {
 	SurvFS_Init();
 	SurvCmds_Init();
 	SurvHacks_Init();
+	SurvCraft_Init();
 	SurvEvents_Init();
 	SurvTimers_Init();
 

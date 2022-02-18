@@ -17,6 +17,8 @@ typedef struct {
 	Ang lastAng;
 	Vec lastPos;
 	cs_bool loadSucc;
+	cs_bool craftMode;
+	cs_bool craftHelp;
 	cs_bool freeFall;
 	cs_float fallStart;
 	cs_byte health, oxygen, hackScore;

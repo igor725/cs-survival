@@ -12,7 +12,9 @@ static const cs_int32 BreakTimings[256] = {
 	-1, 500, 500, 4000, 4000, 4000, 600, 250, 250, 0,
 	1500, 1500, 1500, 1500, 1500, 1500, 1500, 1500, 1500, 1500,
 	1500, 1500, 1500, 1500, 1500, 1500, 0, 0, 0, 0, 7000, 7000,
-	7000, 6400, 7000, 400, 1100, 4000, 20000
+	7000, 6400, 7000, 400, 1100, 4000, 80000, 7000, 500, 4800,
+	500, 0, 1500, 1500, 1500, 1500, 1500, 890, 1500, 70000,
+	4000, 2000, 7000
 };
 
 static void UpdateBlock(World *world, SVec *pos, BlockID bid) {
@@ -53,6 +55,8 @@ void SurvBrk_Done(SrvData *data) {
 }
 
 void SurvBrk_Tick(SrvData *data, cs_uint32 delta) {
+	if(data->craftMode) return;
+
 	cs_int32 breakTime = BreakTimings[data->breakBlock];
 	if(breakTime == -1) {
 		SurvBrk_Stop(data);
@@ -63,8 +67,7 @@ void SurvBrk_Tick(SrvData *data, cs_uint32 delta) {
 	}
 
 	data->breakTimer += (cs_uint16)delta;
-	float df = (data->breakTimer / (float)breakTime);
-	cs_byte newProgress = (cs_byte)(df * SURV_MAX_BRK);
+	cs_byte newProgress = (cs_byte)((data->breakTimer / (float)breakTime) * SURV_MAX_BRK);
 	if(newProgress > data->breakProgress) {
 		data->breakProgress = newProgress;
 		SurvGui_DrawBreakProgress(data);

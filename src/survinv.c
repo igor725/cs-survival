@@ -18,6 +18,7 @@ void SurvInv_Empty(SrvData *data) {
 }
 
 void SurvInv_UpdateInventory(SrvData *data) {
+	if(data->craftMode) return;
 	cs_byte invIdx = 0;
 
 	for(cs_uint16 i = 1; i < 256; i++) {
