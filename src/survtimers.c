@@ -66,5 +66,5 @@ TIMER_FUNC(HealthRegen) {
 void SurvTimers_Init(void) {
 	Timer_Add(-1, 350, LavaDamage, NULL);
 	Timer_Add(-1, 1000, FluidTester, NULL);
-	Timer_Add(-1, 2000, HealthRegen, NULL);
+	Timer_Add(-1, 4000, HealthRegen, NULL);
 }

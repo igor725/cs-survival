@@ -10,6 +10,7 @@
 
 typedef struct {
 	Client *client;
+	cs_uint64 lastHit;
 	cs_char lastWorld[65];
 	cs_uint16 inventory[256];
 	SVec lastClick;

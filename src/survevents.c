@@ -3,6 +3,7 @@
 #include <world.h>
 #include <event.h>
 #include <client.h>
+#include <platform.h>
 #include <protocol.h>
 #include <csmath.h>
 #include "survdata.h"
@@ -120,10 +121,10 @@ static void Survival_OnMove(void *param) {
 				break;
 			default:
 				if(data->freeFall) {
-					falldamage = (data->fallStart - ppos.y) / 2.0f;
+					falldamage = (data->fallStart - ppos.y) / 22.0f;
 					data->freeFall = false;
-					if(falldamage > 1.0f && Client_GetFluidLevel(client, NULL) < 1)
-						SurvDmg_Hurt(data, NULL, (cs_byte)falldamage);
+					if(falldamage > 0.19f && Client_GetFluidLevel(client, NULL) < 1)
+						SurvDmg_Hurt(data, NULL, (cs_byte)(falldamage * SURV_MAX_HEALTH));
 				}
 				break;
 		}
@@ -171,7 +172,7 @@ static void Survival_OnClick(void *param) {
 		Vec tgcampos;
 		if(Client_GetPosition(target, &tgcampos, NULL)) {
 			knockback.x = -(playerpos.x - tgcampos.x) * 350.0f;
-			knockback.y = -(playerpos.y - tgcampos.y) * 350.0f;
+			knockback.y = 150.0f - (playerpos.y - tgcampos.y) * 350.0f;
 			knockback.z = -(playerpos.z - tgcampos.z) * 350.0f;
 			dist_entity = Math_Distance(&tgcampos, &playerpos);
 			if(dist_entity > dist_max) dist_entity = 32768.0f;
@@ -196,13 +197,20 @@ static void Survival_OnClick(void *param) {
 		}
 		if(data->pvpMode && dataTg->pvpMode) {
 			if(!dataTg->godMode) {
+				cs_uint64 ctime = Time_GetMSec();
+				if(ctime - data->lastHit < 600ull)
+					return;
+				data->lastHit = ctime;
 				dataTg->hackScore = 0;
 				SurvDmg_Hurt(dataTg, data, 1);
 				Client_SetVelocity(target, &knockback, true);
-			}
+			} else
+				Client_Chat(a->client, MESSAGE_TYPE_CHAT, "&cYou cannot hit a player in god mode!");
 		} else {
 			if(!data->pvpMode)
-				Client_Chat(a->client, 0, "Enable pvp mode (/pvp) first.");
+				Client_Chat(a->client, MESSAGE_TYPE_CHAT, "&cEnable PvP mode (/pvp) first!");
+			else
+				Client_Chat(a->client, MESSAGE_TYPE_CHAT, "&cThis player is not in PvP mode!");
 		}
 	}
 

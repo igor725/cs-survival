@@ -19,7 +19,11 @@ COMMAND_FUNC(God) {
 	if(data) {
 		cs_bool state = SurvDmg_GetGod(data) ^ 1;
 		SurvDmg_SetGod(data, state);
-		COMMAND_PRINTF("God mode %s", MODE(state));
+		if(target != ccdata->caller) {
+			COMMAND_PRINTF("God mode %s for &e%s", MODE(state), username);
+		} else {
+			COMMAND_PRINTF("God mode %s", MODE(state));
+		}
 	}
 
 	COMMAND_PRINT("Player not found");
@@ -54,6 +58,30 @@ COMMAND_FUNC(Hurt) {
 	COMMAND_PRINTUSAGE;
 }
 
+COMMAND_FUNC(Heal) {
+	COMMAND_SETUSAGE("/heal [player name]");
+
+	cs_char username[64];
+	Client *target = ccdata->caller;
+	SrvData *data = SurvData_Get(target);
+
+	if(COMMAND_GETARG(username, 64, 0)) {
+		target = Client_GetByName(username);
+		data = SurvData_Get(target);
+
+		if(target != ccdata->caller) {
+			COMMAND_TESTOP();
+		}
+	}
+
+	if(data) {
+		SurvDmg_Heal(data, SURV_MAX_HEALTH);
+		COMMAND_PRINTF("Player %s is healed", Client_GetName(target));
+	}
+
+	COMMAND_PRINTUSAGE;
+}
+
 COMMAND_FUNC(PvP) {
 	SrvData *data = SurvData_Get(ccdata->caller);
 	if(!data) {
@@ -80,6 +108,7 @@ COMMAND_FUNC(Suicide) {
 void SurvCmds_Init(void) {
 	COMMAND_ADD(God, CMDF_OP, "Toggle god mode");
 	COMMAND_ADD(Hurt, CMDF_NONE, "Takes specified ammount of health");
+	COMMAND_ADD(Heal, CMDF_NONE, "Heals player");
 	COMMAND_ADD(PvP, CMDF_CLIENT, "Toggle PvP mode");
 	COMMAND_ADD(Suicide, CMDF_CLIENT, "Commit suicide");
 }
