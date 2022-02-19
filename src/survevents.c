@@ -159,7 +159,7 @@ static void Survival_OnClick(void *param) {
 	float dist_entity = 32768.0f;
 	float dist_block = 32768.0f;
 
-	if(!Vec_IsInvalid(blockPos)) {
+	if(!Vec_IsNegative(*blockPos)) {
 		Vec blockcenter;
 		blockcenter.x = blockPos->x + 0.5f;
 		blockcenter.y = blockPos->y - 0.5f;
