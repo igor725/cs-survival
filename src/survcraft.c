@@ -61,6 +61,13 @@ static struct _SRecipe {
 			{.id = BLOCK_SAND, .count = 1}
 		}
 	},
+	[BLOCK_GOLD] = {
+		.count = 1,
+		.citems = 1,
+		.items = {
+			{.id = BLOCK_GOLD_ORE, .count = 9}
+		}
+	},
 	[BLOCK_IRON] = {
 		.count = 1,
 		.citems = 1,
@@ -80,13 +87,6 @@ static struct _SRecipe {
 		.citems = 1,
 		.items = {
 			{.id = BLOCK_STONE, .count = 2}
-		}
-	},
-	[BLOCK_GOLD] = {
-		.count = 1,
-		.citems = 1,
-		.items = {
-			{.id = BLOCK_IRON_ORE, .count = 9}
 		}
 	},
 	[BLOCK_BOOKSHELF] = {
