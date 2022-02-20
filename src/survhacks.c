@@ -40,6 +40,12 @@ void SurvHacks_Update(SrvData *data) {
 	Client_SendHacks(data->client, &hacks);
 }
 
+static cs_float DistanceXZ(Vec *v1, Vec *v2) {
+	cs_float dx = (v1->x - v2->x),
+	dz = (v1->z - v2->z);
+	return Math_Sqrt((dx * dx) + (dz * dz));
+}
+
 void SurvHacks_Test(SrvData *data, Vec *playerPos) {
 	if(data->hackScore < 10) {
 		cs_float *ppt = (cs_float *)playerPos,
@@ -52,9 +58,13 @@ void SurvHacks_Test(SrvData *data, Vec *playerPos) {
 				break;
 			}
 		}
+
+		if(data->freeFall && DistanceXZ(playerPos, &data->fallStart) > 10)
+			data->hackScore += 4;
+
 		data->lastPos = *playerPos;
 	}
 
-	if(data->hackScore >= 8)
-		Client_Kick(data->client, "Hacked client detected.");
+	if(data->hackScore > 10)
+		Client_Kick(data->client, "Hacked client detected");
 }

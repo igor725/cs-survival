@@ -105,6 +105,7 @@ static void Survival_OnTick(void *param) {
 
 static void Survival_OnMove(void *param) {
 	Client *client = (Client *)param;
+	if(Client_IsOP(client)) return;
 	SrvData *data = SurvData_Get(client);
 	if(!data || data->godMode) return;
 
@@ -115,8 +116,11 @@ static void Survival_OnMove(void *param) {
 		switch(Client_GetStandBlock(client)) {
 			case BLOCK_AIR:
 				if(!data->freeFall) {
-					data->fallStart = ppos.y;
+					data->fallStart = ppos;
 					data->freeFall = true;
+				} else if(ppos.y - data->fallStart.y > 3.0f) {
+					data->fallStart.y = ppos.y;
+					data->hackScore += 6;
 				}
 				break;
 			case BLOCK_WATER:
@@ -125,7 +129,7 @@ static void Survival_OnMove(void *param) {
 				break;
 			default:
 				if(data->freeFall) {
-					falldamage = (data->fallStart - ppos.y) / 22.0f;
+					falldamage = (data->fallStart.y - ppos.y) / 22.0f;
 					data->freeFall = false;
 					if(falldamage > 0.19f && Client_GetFluidLevel(client, NULL) < 1)
 						SurvDmg_Hurt(data, NULL, (cs_byte)(falldamage * SURV_MAX_HEALTH));

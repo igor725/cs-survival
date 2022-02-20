@@ -20,7 +20,7 @@ typedef struct {
 	cs_bool craftMode;
 	cs_bool craftHelp;
 	cs_bool freeFall;
-	cs_float fallStart;
+	Vec fallStart;
 	cs_byte health, oxygen, hackScore;
 	cs_bool showOxygen, godMode, pvpMode;
 	cs_uint16 regenTimer, breakTimer;
