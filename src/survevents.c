@@ -119,6 +119,10 @@ static void Survival_OnMove(void *param) {
 					data->freeFall = true;
 				}
 				break;
+			case BLOCK_WATER:
+			case BLOCK_WATER_STILL:
+				data->freeFall = false;
+				break;
 			default:
 				if(data->freeFall) {
 					falldamage = (data->fallStart - ppos.y) / 22.0f;
