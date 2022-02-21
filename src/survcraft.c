@@ -6,15 +6,9 @@
 #include <types/block.h>
 #include "survdata.h"
 #include "survinv.h"
+#include "survcraft.h"
 
-static struct _SRecipe {
-	cs_uint16 count;
-	cs_byte citems;
-	struct _SRItem {
-		BlockID id;
-		cs_uint16 count;
-	} items[6];
-} recipes[256] = {
+static SurvRecipe recipes[256] = {
 	[BLOCK_STONE] = {
 		.count = 1,
 		.citems = 2,
@@ -246,6 +240,10 @@ static EventRegBunch events[] = {
 	{'b', EVT_ONBLOCKPLACE, (void *)evtblockplace},
 	{0, 0, NULL}
 };
+
+SurvRecipe *SurvCraft_GetRecipe(BlockID id) {
+	return &recipes[id];
+}
 
 void SurvCraft_Init(void) {
 	COMMAND_ADD(Craft, CMDF_CLIENT, "Enter crafting mode");

@@ -2,9 +2,11 @@
 #define SURV_ITF_H
 #include <core.h>
 #include <client.h>
+#include <types/block.h>
 #include "survinv.h"
 #include "survgui.h"
 #include "survdmg.h"
+#include "survcraft.h"
 
 #define SURV_ITF_NAME "SurvivalController_v1"
 
@@ -26,5 +28,7 @@ typedef struct _SurvItf {
 	void (*hurt)(SrvData *target, SrvData *attacker, cs_byte damage);
 	void (*heal)(SrvData *target, cs_byte points);
 	void (*kill)(SrvData *target);
+
+	SurvRecipe *(*getRecipe)(BlockID id);
 } SurvItf;
 #endif

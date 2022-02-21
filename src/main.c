@@ -12,7 +12,7 @@
 #include "survitf.h"
 #include "survcraft.h"
 
-Plugin_SetVersion(1)
+Plugin_SetVersion(1);
 
 static SurvItf SuvivalController = {
 	.getSrvData = SurvData_Get,
@@ -30,7 +30,9 @@ static SurvItf SuvivalController = {
 
 	.hurt = SurvDmg_Hurt,
 	.heal = SurvDmg_Heal,
-	.kill = SurvDmg_Kill
+	.kill = SurvDmg_Kill,
+
+	.getRecipe = SurvCraft_GetRecipe
 };
 
 Plugin_DeclareInterfaces(2) {
