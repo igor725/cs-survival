@@ -198,7 +198,7 @@ static void Survival_OnClick(void *param) {
 			if(bid > BLOCK_AIR) SurvBrk_Start(data, bid);
 		}
 		data->lastClick = *blockPos;
-	} else if(dist_entity < dist_block && dist_entity < dist_max) {
+	} else if(dist_entity < dist_block && dist_entity < dist_max && dataTg) {
 		if(data->breakStarted) {
 			SurvBrk_Stop(data);
 			return;
