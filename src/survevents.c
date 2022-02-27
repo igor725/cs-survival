@@ -161,7 +161,6 @@ static void Survival_OnClick(void *param) {
 	SVec *blockPos = &a->tgpos;
 	Client *target = Client_GetByID(a->tgid);
 	SrvData *dataTg = NULL;
-	if(target) dataTg = SurvData_Get(target);
 	cs_float dist_max = Client_GetClickDistanceInBlocks(a->client);
 
 	float dist_entity = 32768.0f;
@@ -178,6 +177,7 @@ static void Survival_OnClick(void *param) {
 
 	if(target) {
 		Vec tgcampos;
+		dataTg = SurvData_Get(target);
 		if(Client_GetPosition(target, &tgcampos, NULL)) {
 			knockback.x = -(playerpos.x - tgcampos.x) * 350.0f;
 			knockback.y = 150.0f - (playerpos.y - tgcampos.y) * 350.0f;

@@ -55,6 +55,38 @@ static SurvRecipe recipes[256] = {
 			{.id = BLOCK_SAND, .count = 1}
 		}
 	},
+	[BLOCK_RED] = {
+		.count = 1,
+		.citems = 2,
+		.items = {
+			{.id = BLOCK_WHITE, .count = 1},
+			{.id = BLOCK_ROSE, .count = 4}
+		}
+	},
+	[BLOCK_BLACK] = {
+		.count = 1,
+		.citems = 2,
+		.items = {
+			{.id = BLOCK_WHITE, .count = 1},
+			{.id = BLOCK_DIRT, .count = 2}
+		}
+	},
+	[BLOCK_GRAY] = {
+		.count = 1,
+		.citems = 2,
+		.items = {
+			{.id = BLOCK_WHITE, .count = 1},
+			{.id = BLOCK_DIRT, .count = 1}
+		}
+	},
+	[BLOCK_WHITE] = {
+		.count = 8,
+		.citems = 2,
+		.items = {
+			{.id = BLOCK_FIRE, .count = 1},
+			{.id = BLOCK_LEAVES, .count = 6}
+		}
+	},
 	[BLOCK_GOLD] = {
 		.count = 1,
 		.citems = 1,
@@ -116,10 +148,13 @@ static SurvRecipe recipes[256] = {
 };
 
 static void ShowFullInventory(SrvData *data) {
+	World *world = Client_GetWorld(data->client);
 	cs_byte invIdx = 0;
 
-	for(cs_uint16 i = 1; i < 256; i++)
-		Client_SetInvOrder(data->client, ++invIdx, (BlockID)i);
+	for(cs_uint16 i = 1; i < 256; i++) {
+		if(Block_IsValid(world, (BlockID)i))
+			Client_SetInvOrder(data->client, ++invIdx, (BlockID)i);
+	}
 }
 
 COMMAND_FUNC(Craft) {

@@ -19,9 +19,11 @@ void SurvInv_Empty(SrvData *data) {
 
 void SurvInv_UpdateInventory(SrvData *data) {
 	if(data->craftMode) return;
+	World *world = Client_GetWorld(data->client);
 	cs_byte invIdx = 0;
 
 	for(cs_uint16 i = 1; i < 256; i++) {
+		if(!Block_IsValid(world, (BlockID)i)) continue;
 		cs_bool mz = data->inventory[i] > 0 || data->godMode;
 		Client_SetBlockPerm(data->client, (BlockID)i, mz, data->godMode);
 		if(mz)
