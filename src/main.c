@@ -35,7 +35,7 @@ static SurvItf SuvivalController = {
 	.getRecipe = SurvCraft_GetRecipe
 };
 
-Plugin_DeclareInterfaces(2) {
+Plugin_DeclareInterfaces {
 	PLUGIN_IFACE_ADD(SURV_ITF_NAME, SuvivalController)
 
 	PLUGIN_IFACE_END
