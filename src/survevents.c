@@ -227,17 +227,18 @@ static void Survival_OnClick(void *param) {
 	Client_Kick(a->client, "Click hack detected!");
 }
 
-EventRegBunch events[] = {
-	{'v', EVT_ONTICK, (void *)Survival_OnTick},
-	{'v', EVT_ONSPAWN, (void *)Survival_OnSpawn},
-	{'v', EVT_ONDESPAWN, (void *)Survival_OnDespawn},
-	{'v', EVT_ONHELDBLOCKCHNG, (void *)Survival_OnHeldChange},
-	{'b', EVT_ONBLOCKPLACE, (void *)Survival_OnBlockPlace},
-	{'v', EVT_ONMOVE, (void *)Survival_OnMove},
-	{'v', EVT_ONDISCONNECT, (void *)SurvData_Free},
-	{'b', EVT_ONHANDSHAKEDONE, (void *)Survival_OnHandshake},
-	{'v', EVT_ONCLICK, (void *)Survival_OnClick},
-	{0, 0, NULL}
+Event_DeclareBunch (events) {
+	EVENT_BUNCH_ADD('v', EVT_ONTICK, Survival_OnTick)
+	EVENT_BUNCH_ADD('v', EVT_ONSPAWN, Survival_OnSpawn)
+	EVENT_BUNCH_ADD('v', EVT_ONDESPAWN, Survival_OnDespawn)
+	EVENT_BUNCH_ADD('v', EVT_ONHELDBLOCKCHNG, Survival_OnHeldChange)
+	EVENT_BUNCH_ADD('b', EVT_ONBLOCKPLACE, Survival_OnBlockPlace)
+	EVENT_BUNCH_ADD('v', EVT_ONMOVE, Survival_OnMove)
+	EVENT_BUNCH_ADD('v', EVT_ONDISCONNECT, SurvData_Free)
+	EVENT_BUNCH_ADD('b', EVT_ONHANDSHAKEDONE, Survival_OnHandshake)
+	EVENT_BUNCH_ADD('v', EVT_ONCLICK, Survival_OnClick)
+
+	EVENT_BUNCH_END
 };
 
 void SurvEvents_Init(void) {
