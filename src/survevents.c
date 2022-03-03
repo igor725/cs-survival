@@ -1,5 +1,6 @@
 #include <core.h>
 #include <str.h>
+#include <block.h>
 #include <world.h>
 #include <event.h>
 #include <client.h>
@@ -62,25 +63,100 @@ static void Survival_OnDespawn(void *param) {
 	if(data) SurvFS_SavePlayerData(data);
 }
 
+static cs_bool leaves[4][5][5] = {
+	{
+		{0, 0, 0, 0, 0},
+		{0, 0, 0, 0, 0},
+		{0, 1, 1, 1, 0},
+		{0, 0, 0, 0, 0},
+		{0, 0, 0, 0, 0},
+	},
+	{
+		{0, 0, 0, 0, 0},
+		{0, 0, 1, 0, 0},
+		{0, 1, 0, 1, 0},
+		{0, 0, 1, 0, 0},
+		{0, 0, 0, 0, 0},
+	},
+	{
+		{1, 1, 1, 1, 1},
+		{1, 1, 1, 1, 1},
+		{1, 1, 0, 1, 1},
+		{1, 1, 1, 1, 1},
+		{1, 1, 1, 1, 1},
+	},
+	{
+		{1, 1, 1, 1, 1},
+		{1, 1, 1, 1, 1},
+		{1, 1, 0, 1, 1},
+		{1, 1, 1, 1, 1},
+		{1, 1, 1, 1, 1},
+	},
+};
+
+// TODO: Упростить эту штуку
+static void PlaceTree(cs_int16 treeHeight, World *world, SVec pos) {
+	BulkBlockUpdate bbu = {
+		.world = world,
+		.autosend = true
+	};
+
+	Block_BulkUpdateClean(&bbu);
+	SVec tmp = pos;
+	for(; tmp.y <= pos.y + treeHeight; tmp.y++) {
+		cs_uint32 offset = World_GetOffset(world, &tmp);
+		if(offset == WORLD_INVALID_OFFSET) continue; // Попытка установить блок на кривом оффсете
+		if(World_GetBlock(world, &tmp)) continue; // Трогаем только воздух
+		Block_BulkUpdateAdd(&bbu, offset, BLOCK_LOG);
+		World_SetBlockO(world, offset, BLOCK_LOG);
+	}
+	for(cs_int16 y = 0; y < 4; y++) {
+		for(cs_int16 x = 0; x < 5; x++) {
+			for(cs_int16 z = 0; z < 5; z++) {
+				if(leaves[y][x][z]) {
+					tmp.x = x + pos.x - 2; tmp.z = z + pos.z - 2;
+					cs_uint32 offset = World_GetOffset(world, &tmp);
+					if(offset == WORLD_INVALID_OFFSET) continue;
+					if(World_GetBlock(world, &tmp)) continue;
+					Block_BulkUpdateAdd(&bbu, offset, BLOCK_LEAVES);
+					World_SetBlockO(world, offset, BLOCK_LEAVES);
+				}
+			}
+		}
+		tmp.y -= 1;
+	}
+	Block_BulkUpdateSend(&bbu);
+}
+
 static cs_bool Survival_OnBlockPlace(void *param) {
 	onBlockPlace *a = (onBlockPlace *)param;
 	SrvData *data = SurvData_Get(a->client);
 	if(!data || data->godMode) return true;
 
-	cs_byte mode = a->mode;
-	BlockID id = a->id;
-
-	if(mode == 0x00) {
+	if(a->mode == 0x00 || a->mode != 0x01) {
 		Client_Kick(a->client, "Hacked client detected.");
 		return false;
 	}
 
-	if(mode == 0x01 && SurvInv_Take(data, id, 1)) {
-		if(SurvInv_Get(data, id) < 1) {
-			SurvGui_DrawBlockInfo(data, 0);
-			return true;
+	World *world = Client_GetWorld(a->client);
+
+	if(a->id == BLOCK_SAPLING) {
+		SVec under = a->pos;
+		under.y -= 1;
+		BlockID ublock = World_GetBlock(world, &under);
+		if(ublock < BLOCK_GRASS || ublock > BLOCK_DIRT)
+			return false;
+	}
+
+	if(SurvInv_Take(data, a->id, 1)) {
+		SurvGui_DrawBlockInfo(data,
+			SurvInv_Get(data, a->id) > 0 ? a->id : BLOCK_AIR
+		);
+		if(a->id == BLOCK_SAPLING) {
+			cs_int16 treeHeight = (cs_int16)Random_Range(&data->rnd, 4, 6);
+			PlaceTree(treeHeight, world, a->pos);
+			return false;
 		}
-		SurvGui_DrawBlockInfo(data, id);
 		return true;
 	}
 

@@ -1,6 +1,7 @@
 #include <core.h>
 #include <client.h>
 #include <assoc.h>
+#include <csmath.h>
 #include "survdata.h"
 #include "survinv.h"
 
@@ -14,6 +15,7 @@ SrvData *SurvData_Create(Client *client) {
 
 	SrvData *data = Assoc_AllocFor(client, SurvData_AssocType, 1, sizeof(SrvData));
 	if(data) {
+		Random_SeedFromTime(&data->rnd);
 		data->health = SURV_MAX_HEALTH;
 		data->oxygen = SURV_MAX_OXYGEN;
 		data->craftHelp = true;

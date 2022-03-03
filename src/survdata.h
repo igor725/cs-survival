@@ -3,6 +3,7 @@
 #include <core.h>
 #include <vector.h>
 #include <client.h>
+#include <csmath.h>
 
 #define SURV_MAX_HEALTH 20
 #define SURV_MAX_OXYGEN 10
@@ -10,6 +11,7 @@
 
 typedef struct {
 	Client *client;
+	RNGState rnd;
 	cs_uint64 lastHit;
 	cs_char lastWorld[65];
 	cs_uint16 inventory[256];
