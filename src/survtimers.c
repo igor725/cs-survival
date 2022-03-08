@@ -10,7 +10,7 @@ TIMER_FUNC(LavaDamage) {
 	(void)left; (void)ticks; (void)ud;
 	for(ClientID id = 0; id < MAX_CLIENTS; id++) {
 		Client *client = Clients_List[id];
-		if(!client || !Client_CheckState(client, PLAYER_STATE_INGAME)) continue;
+		if(!client || !Client_CheckState(client, CLIENT_STATE_INGAME)) continue;
 		SrvData *data = SurvData_Get(client);
 		if(!data || data->godMode) continue;
 
@@ -25,7 +25,7 @@ TIMER_FUNC(FluidTester) {
 	(void)left; (void)ticks; (void)ud;
 	for(ClientID id = 0; id < MAX_CLIENTS; id++) {
 		Client *client = Clients_List[id];
-		if(!client || !Client_CheckState(client, PLAYER_STATE_INGAME)) continue;
+		if(!client || !Client_CheckState(client, CLIENT_STATE_INGAME)) continue;
 		SrvData *data = SurvData_Get(client);
 		if(!data || data->godMode) continue;
 		cs_byte waterLevel = Client_GetFluidLevel(client, NULL);
@@ -56,7 +56,7 @@ TIMER_FUNC(HealthRegen) {
 	(void)left; (void)ticks; (void)ud;
 	for(ClientID id = 0; id < MAX_CLIENTS; id++) {
 		Client *client = Clients_List[id];
-		if(!client || !Client_CheckState(client, PLAYER_STATE_INGAME)) continue;
+		if(!client || !Client_CheckState(client, CLIENT_STATE_INGAME)) continue;
 		SrvData *data = SurvData_Get(client);
 		if(!data || data->godMode || data->health == SURV_MAX_HEALTH) continue;
 		SurvDmg_Heal(data, 1);

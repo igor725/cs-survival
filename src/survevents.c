@@ -174,7 +174,7 @@ static void Survival_OnTick(void *param) {
 	cs_int32 delta = *(cs_int32 *)param;
 	for(ClientID i = 0; i < MAX_CLIENTS; i++) {
 		SrvData *data = SurvData_GetByID(i);
-		if(data && Client_CheckState(data->client, PLAYER_STATE_INGAME))
+		if(data && Client_CheckState(data->client, CLIENT_STATE_INGAME))
 			if(data->breakStarted) SurvBrk_Tick(data, delta);
 	}
 }
