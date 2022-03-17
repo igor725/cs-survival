@@ -247,10 +247,15 @@ static cs_bool evtonmessage(void *param) {
 						return false;
 					}
 				}
-				SurvInv_Add(data, held, (cs_uint16)reps * recp->count);
+				cs_uint16 expected = (cs_uint16)reps * recp->count;
+				expected = SurvInv_Add(data, held, expected);
+				if(expected == 0) {
+					Client_Chat(a->client, MESSAGE_TYPE_CHAT, "&cYou don't have enough space for this block.");
+					return false;
+				}
 				for(cs_byte i = 0; i < recp->citems; i++) {
 					struct _SRItem *item = &recp->items[i];
-					SurvInv_Take(data, item->id, (cs_uint16)reps * item->count);
+					SurvInv_Take(data, item->id, expected);
 				}
 				data->craftMode = false;
 				SurvInv_UpdateInventory(data);
