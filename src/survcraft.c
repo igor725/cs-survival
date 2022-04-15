@@ -3,7 +3,7 @@
 #include <event.h>
 #include <client.h>
 #include <command.h>
-#include <types/block.h>
+#include <block.h>
 #include "survdata.h"
 #include "survinv.h"
 #include "survcraft.h"

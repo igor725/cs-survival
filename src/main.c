@@ -1,5 +1,4 @@
 #include <core.h>
-#include <str.h>
 #include <log.h>
 #include <server.h>
 #include <plugin.h>

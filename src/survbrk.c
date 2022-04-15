@@ -1,7 +1,7 @@
 #include <core.h>
 #include <world.h>
 #include <client.h>
-#include <block.h>
+#include <types/block.h>
 #include <csmath.h>
 #include "survdata.h"
 #include "survbrk.h"

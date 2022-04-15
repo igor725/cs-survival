@@ -2,7 +2,7 @@
 #define SURV_DATA_H
 #include <core.h>
 #include <vector.h>
-#include <client.h>
+#include <types/client.h>
 #include <csmath.h>
 
 #define SURV_MAX_HEALTH 20

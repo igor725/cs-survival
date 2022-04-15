@@ -1,6 +1,5 @@
 #include <core.h>
 #include <client.h>
-#include <protocol.h>
 #include <block.h>
 #include <str.h>
 #include "survdata.h"

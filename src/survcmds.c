@@ -2,8 +2,6 @@
 #include <command.h>
 #include "survcmds.h"
 #include "survdata.h"
-#include "survgui.h"
-#include "survinv.h"
 #include "survdmg.h"
 
 COMMAND_FUNC(God) {
