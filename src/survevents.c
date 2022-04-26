@@ -255,9 +255,9 @@ static void Survival_OnClick(void *param) {
 		Vec tgcampos;
 		dataTg = SurvData_Get(target);
 		if(Client_GetPosition(target, &tgcampos, NULL)) {
-			knockback.x = -(playerpos.x - tgcampos.x) * 350.0f;
-			knockback.y = 150.0f - (playerpos.y - tgcampos.y) * 350.0f;
-			knockback.z = -(playerpos.z - tgcampos.z) * 350.0f;
+			knockback.x = -(playerpos.x - tgcampos.x) * 0.7f;
+			knockback.y = 0.9f - (playerpos.y - tgcampos.y) * 0.7f;
+			knockback.z = -(playerpos.z - tgcampos.z) * 0.7f;
 			dist_entity = Math_Distance(&tgcampos, &playerpos);
 			if(dist_entity > dist_max) dist_entity = 32768.0f;
 		}
@@ -287,7 +287,7 @@ static void Survival_OnClick(void *param) {
 				data->lastHit = ctime;
 				dataTg->hackScore = 0;
 				SurvDmg_Hurt(dataTg, data, 1);
-				Client_SetVelocity(target, &knockback, true);
+				Client_SetVelocity(target, &knockback, PVC_ADDALL);
 			} else
 				Client_Chat(a->client, MESSAGE_TYPE_CHAT, "&cYou cannot hit a player in god mode!");
 		} else {
