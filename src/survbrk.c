@@ -59,9 +59,9 @@ void SurvBrk_Done(SrvData *data) {
 	SVec *pos = &data->lastClick;
 	World *world = Client_GetWorld(data->client);
 	onBlockPlace params = {
+		.mode = SETBLOCK_MODE_DESTROY,
 		.client = data->client,
 		.id = BLOCK_AIR,
-		.mode = 0x00,
 		.pos = *pos
 	};
 	if(Event_Call(EVT_ONBLOCKPLACE, &params)) {
