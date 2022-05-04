@@ -132,11 +132,10 @@ static cs_bool Survival_OnBlockPlace(void *param) {
 	onBlockPlace *a = (onBlockPlace *)param;
 	SrvData *data = SurvData_Get(a->client);
 	if(!data || data->godMode) return true;
-
-	if(a->mode == 0x00 || a->mode != 0x01) {
+	if(a->mode != 0x01 && !data->breakStarted) {
 		Client_Kick(a->client, "Hacked client detected.");
 		return false;
-	}
+	} else if(a->mode == 0x00) return true;
 
 	World *world = Client_GetWorld(a->client);
 

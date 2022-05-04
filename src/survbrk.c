@@ -1,6 +1,7 @@
 #include <core.h>
 #include <world.h>
 #include <client.h>
+#include <event.h>
 #include <types/block.h>
 #include <csmath.h>
 #include "survdata.h"
@@ -57,16 +58,24 @@ BlockID SurvBrk_GetDrop(SrvData *data) {
 void SurvBrk_Done(SrvData *data) {
 	SVec *pos = &data->lastClick;
 	World *world = Client_GetWorld(data->client);
-	BlockID id = SurvBrk_GetDrop(data),
-	held = Client_GetHeldBlock(data->client);
+	onBlockPlace params = {
+		.client = data->client,
+		.id = BLOCK_AIR,
+		.mode = 0x00,
+		.pos = *pos
+	};
+	if(Event_Call(EVT_ONBLOCKPLACE, &params)) {
+		BlockID id = SurvBrk_GetDrop(data),
+		held = Client_GetHeldBlock(data->client);
 
-	SurvInv_Add(data, id, 1);
-	if(held == BLOCK_AIR)
-		Client_SetHeldBlock(data->client, id, false);
-	if(held == id)
-		SurvGui_DrawBlockInfo(data, id);
-	World_SetBlock(world, pos, BLOCK_AIR);
-	UpdateBlock(world, pos, BLOCK_AIR);
+		SurvInv_Add(data, id, 1);
+		if(held == BLOCK_AIR)
+			Client_SetHeldBlock(data->client, id, false);
+		if(held == id)
+			SurvGui_DrawBlockInfo(data, id);
+		World_SetBlock(world, pos, BLOCK_AIR);
+		UpdateBlock(world, pos, BLOCK_AIR);
+	}
 	SurvBrk_Stop(data);
 }
 
