@@ -9,7 +9,7 @@
 #define SURV_MAX_OXYGEN 10
 #define SURV_MAX_BREAKPRG 10
 
-typedef struct {
+typedef struct _SrvData {
 	Client *client;
 	RNGState rnd;
 	cs_uint64 lastHit;

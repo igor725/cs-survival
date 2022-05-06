@@ -159,20 +159,20 @@ static void ShowFullInventory(SrvData *data) {
 
 COMMAND_FUNC(Craft) {
 	SrvData *data = SurvData_Get(ccdata->caller);
-	if(!data) {
+	if(!data)
 		COMMAND_PRINT("Something went wrong");
-	}
 
-	if(data->godMode) {
+	if(data->godMode)
 		COMMAND_PRINT("Crafting is not available in god mode");
-	}
 
 	data->craftMode ^= 1;
 	if(data->craftMode) {
 		ShowFullInventory(data);
 		Client_SetHeldBlock(ccdata->caller, BLOCK_AIR, false);
-		COMMAND_PRINTLINE("&2Entering craft mode...");
-		COMMAND_PRINT("&2Open your inventory and pick the item you want to craft.");
+		COMMAND_PRINT(
+			"&2Entering craft mode...\r\n"
+			"&2Open your inventory and pick the item you want to craft."
+		);
 	} else {
 		SurvInv_UpdateInventory(data);
 		COMMAND_PRINT("&2Exiting craft mode...");
@@ -205,52 +205,50 @@ static void printreceipe(Client *client, BlockID id, struct _SRecipe *recp) {
 	Client_Chat(client, MESSAGE_TYPE_CHAT, "&cInternal error");
 }
 
-static void evtblockchange(void *param) {
-	onHeldBlockChange *a = (onHeldBlockChange *)param;
-	SrvData *data = SurvData_Get(a->client);
+static void evtblockchange(onHeldBlockChange *obj) {
+	SrvData *data = SurvData_Get(obj->client);
 
 	if(data && data->craftMode) {
-		if(a->curr != BLOCK_AIR) {
-			struct _SRecipe *recp = &recipes[a->curr];
+		if(obj->curr != BLOCK_AIR) {
+			struct _SRecipe *recp = &recipes[obj->curr];
 			if(recp->citems == 0) {
-				Client_Chat(a->client, MESSAGE_TYPE_CHAT, "&cThis item cannot be crafted!");
-				Client_SetHeldBlock(a->client, BLOCK_AIR, false);
+				Client_Chat(obj->client, MESSAGE_TYPE_CHAT, "&cThis item cannot be crafted!");
+				Client_SetHeldBlock(obj->client, BLOCK_AIR, false);
 				return;
 			}
 			if(data->craftHelp) {
-				Client_Chat(a->client, MESSAGE_TYPE_CHAT, "&2Alright, now send to the chat the number of recipe repetitions.");
-				Client_Chat(a->client, MESSAGE_TYPE_CHAT, "&aE.g. if you enter \"4\" for the planks recipe, you will get 16 planks.");
-				Client_Chat(a->client, MESSAGE_TYPE_CHAT, "&aSince 1 log block results 4 planks.");
+				Client_Chat(obj->client, MESSAGE_TYPE_CHAT, "&2Alright, now send to the chat the number of recipe repetitions.");
+				Client_Chat(obj->client, MESSAGE_TYPE_CHAT, "&aE.g. if you enter \"4\" for the planks recipe, you will get 16 planks.");
+				Client_Chat(obj->client, MESSAGE_TYPE_CHAT, "&aSince 1 log block results 4 planks.");
 				data->craftHelp = false;
 			}
-			printreceipe(a->client, a->curr, recp);
+			printreceipe(obj->client, obj->curr, recp);
 		}
 	}
 }
 
-static cs_bool evtonmessage(void *param) {
-	onMessage *a = (onMessage *)param;
-	SrvData *data = SurvData_Get(a->client);
+static cs_bool evtonmessage(onMessage *obj) {
+	SrvData *data = SurvData_Get(obj->client);
 
 	if(data && data->craftMode) {
-		BlockID held = Client_GetHeldBlock(a->client);
+		BlockID held = Client_GetHeldBlock(obj->client);
 		if(held != BLOCK_AIR) {
 			struct _SRecipe *recp = &recipes[held];
 			if(recp->citems == 0) return true;
 
-			cs_int32 reps = String_ToInt(a->message);
+			cs_int32 reps = String_ToInt(obj->message);
 			if(reps > 0) {
 				for(cs_byte i = 0; i < recp->citems; i++) {
 					struct _SRItem *item = &recp->items[i];
 					if(SurvInv_Get(data, item->id) < (cs_uint16)reps * item->count) {
-						Client_Chat(a->client, MESSAGE_TYPE_CHAT, "&cYou do not have enough resources to craft this item.");
+						Client_Chat(obj->client, MESSAGE_TYPE_CHAT, "&cYou do not have enough resources to craft this item.");
 						return false;
 					}
 				}
 				cs_uint16 expected = (cs_uint16)reps * recp->count;
 				expected = SurvInv_Add(data, held, expected);
 				if(expected == 0) {
-					Client_Chat(a->client, MESSAGE_TYPE_CHAT, "&cYou don't have enough space for this block.");
+					Client_Chat(obj->client, MESSAGE_TYPE_CHAT, "&cYou don't have enough space for this block.");
 					return false;
 				}
 				for(cs_byte i = 0; i < recp->citems; i++) {
@@ -259,7 +257,7 @@ static cs_bool evtonmessage(void *param) {
 				}
 				data->craftMode = false;
 				SurvInv_UpdateInventory(data);
-				Client_Chat(a->client, MESSAGE_TYPE_CHAT, "&aItem successfully crafted.");
+				Client_Chat(obj->client, MESSAGE_TYPE_CHAT, "&aItem successfully crafted.");
 				return false;
 			}
 		}
@@ -268,17 +266,17 @@ static cs_bool evtonmessage(void *param) {
 	return true;
 }
 
-static cs_bool evtblockplace(void *param) {
-	onBlockPlace *a = (onBlockPlace *)param;
-	SrvData *data = SurvData_Get(a->client);
+static cs_bool evtblockplace(onBlockPlace *obj) {
+	SrvData *data = SurvData_Get(obj->client);
 	return data ? !data->craftMode : true;
 }
 
-static EventRegBunch events[] = {
-	{'v', EVT_ONHELDBLOCKCHNG, (void *)evtblockchange},
-	{'b', EVT_ONMESSAGE, (void *)evtonmessage},
-	{'b', EVT_ONBLOCKPLACE, (void *)evtblockplace},
-	{0, 0, NULL}
+Event_DeclareBunch (events) {
+	EVENT_BUNCH_ADD('v', EVT_ONHELDBLOCKCHNG, evtblockchange)
+	EVENT_BUNCH_ADD('b', EVT_ONMESSAGE, evtonmessage)
+	EVENT_BUNCH_ADD('b', EVT_ONBLOCKPLACE, evtblockplace)
+
+	EVENT_BUNCH_END
 };
 
 SurvRecipe *SurvCraft_GetRecipe(BlockID id) {
