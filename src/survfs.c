@@ -69,9 +69,9 @@ cs_bool SurvFS_LoadPlayerData(SrvData *data) {
 INL static cs_bool WritePlayerData(SrvData *data, cs_file handle) {
 	cs_bool allok = true;
 	cs_uint32 header = SURVFS_MAGIC;
-	Vec position = {0}; Ang angle = {0};
+	Vec position; Ang angle;
+	Client_GetPosition(data->client, &position, &angle);
 
-	allok = Client_GetPosition(data->client, &position, &angle);
 	WRITE_ENTRY(header);
 	WRITE_ENTRY(data->lastWorld);
 	WRITE_ENTRY(data->pvpMode);

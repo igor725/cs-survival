@@ -186,31 +186,30 @@ static void Survival_OnMove(void *param) {
 
 	Vec ppos; Ang pang;
 	cs_float falldamage;
-	if(Client_GetPosition(client, &ppos, &pang)) {
-		SurvHacks_Test(data, &ppos);
-		switch(Client_GetStandBlock(client)) {
-			case BLOCK_AIR:
-				if(!data->freeFall) {
-					data->fallStart = ppos;
-					data->freeFall = true;
-				} else if(ppos.y - data->fallStart.y > 3.0f) {
-					data->fallStart.y = ppos.y;
-					data->hackScore += 6;
-				}
-				break;
-			case BLOCK_WATER:
-			case BLOCK_WATER_STILL:
+	Client_GetPosition(client, &ppos, &pang);
+	SurvHacks_Test(data, &ppos);
+	switch(Client_GetStandBlock(client)) {
+		case BLOCK_AIR:
+			if(!data->freeFall) {
+				data->fallStart = ppos;
+				data->freeFall = true;
+			} else if(ppos.y - data->fallStart.y > 3.0f) {
+				data->fallStart.y = ppos.y;
+				data->hackScore += 6;
+			}
+			break;
+		case BLOCK_WATER:
+		case BLOCK_WATER_STILL:
+			data->freeFall = false;
+			break;
+		default:
+			if(data->freeFall) {
+				falldamage = (data->fallStart.y - ppos.y) / 22.0f;
 				data->freeFall = false;
-				break;
-			default:
-				if(data->freeFall) {
-					falldamage = (data->fallStart.y - ppos.y) / 22.0f;
-					data->freeFall = false;
-					if(falldamage > 0.19f && Client_GetFluidLevel(client, NULL) < 1)
-						SurvDmg_Hurt(data, NULL, (cs_byte)(falldamage * SURV_MAX_HEALTH));
-				}
-				break;
-		}
+				if(falldamage > 0.19f && Client_GetFluidLevel(client, NULL) < 1)
+					SurvDmg_Hurt(data, NULL, (cs_byte)(falldamage * SURV_MAX_HEALTH));
+			}
+			break;
 	}
 }
 
@@ -227,10 +226,7 @@ static void Survival_OnClick(void *param) {
 	}
 
 	Vec playerpos;
-	if(!Client_GetPosition(a->client, &playerpos, NULL)) {
-		Client_Kick(a->client, "Internal error");
-		return;
-	}
+	Client_GetPosition(a->client, &playerpos, NULL);
 
 	Vec knockback = {0.0f, 0.0f, 0.0f};
 	SVec *blockPos = &a->tgpos;
@@ -253,13 +249,12 @@ static void Survival_OnClick(void *param) {
 	if(target) {
 		Vec tgcampos;
 		dataTg = SurvData_Get(target);
-		if(Client_GetPosition(target, &tgcampos, NULL)) {
-			knockback.x = -(playerpos.x - tgcampos.x) * 0.7f;
-			knockback.y = 0.9f - (playerpos.y - tgcampos.y) * 0.7f;
-			knockback.z = -(playerpos.z - tgcampos.z) * 0.7f;
-			dist_entity = Math_Distance(&tgcampos, &playerpos);
-			if(dist_entity > dist_max) dist_entity = 32768.0f;
-		}
+		Client_GetPosition(target, &tgcampos, NULL);
+		knockback.x = -(playerpos.x - tgcampos.x) * 0.7f;
+		knockback.y = 0.9f - (playerpos.y - tgcampos.y) * 0.7f;
+		knockback.z = -(playerpos.z - tgcampos.z) * 0.7f;
+		dist_entity = Math_Distance(&tgcampos, &playerpos);
+		if(dist_entity > dist_max) dist_entity = 32768.0f;
 	}
 
 	if(data->breakStarted && !SVec_Compare(&data->lastClick, blockPos)) {
