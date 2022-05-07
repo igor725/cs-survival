@@ -18,7 +18,7 @@ COMMAND_FUNC(God) {
 		cs_bool state = SurvDmg_GetGod(data) ^ 1;
 		SurvDmg_SetGod(data, state);
 		if(target != ccdata->caller) {
-			COMMAND_PRINTF("God mode %s for &e%s", MODE(state), username);
+			COMMAND_PRINTF("God mode %s for &e%s", MODE(state), Client_GetName(target));
 		} else {
 			COMMAND_PRINTF("God mode %s", MODE(state));
 		}

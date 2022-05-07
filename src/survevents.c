@@ -6,7 +6,7 @@
 #include <client.h>
 #include <platform.h>
 #include <protocol.h>
-#include <csmath.h>
+#include <vector.h>
 #include "survdata.h"
 #include "survevents.h"
 #include "survgui.h"
@@ -234,15 +234,15 @@ static void Survival_OnClick(void *param) {
 	SrvData *dataTg = NULL;
 	cs_float dist_max = Client_GetClickDistanceInBlocks(a->client);
 
-	float dist_entity = 32768.0f;
-	float dist_block = 32768.0f;
+	cs_float dist_entity = 32768.0f;
+	cs_float dist_block = 32768.0f;
 
 	if(!Vec_IsNegative(*blockPos)) {
 		Vec blockcenter;
 		blockcenter.x = blockPos->x + 0.5f;
 		blockcenter.y = blockPos->y - 0.5f;
 		blockcenter.z = blockPos->z + 0.5f;
-		dist_block = Math_Distance(&blockcenter, &playerpos);
+		dist_block = Vec_Distance(blockcenter, playerpos);
 		if(dist_block - dist_max > 1.5f) goto hackdetected;
 	}
 
@@ -253,7 +253,7 @@ static void Survival_OnClick(void *param) {
 		knockback.x = -(playerpos.x - tgcampos.x) * 0.7f;
 		knockback.y = 0.9f - (playerpos.y - tgcampos.y) * 0.7f;
 		knockback.z = -(playerpos.z - tgcampos.z) * 0.7f;
-		dist_entity = Math_Distance(&tgcampos, &playerpos);
+		dist_entity = Vec_Distance(tgcampos, playerpos);
 		if(dist_entity > dist_max) dist_entity = 32768.0f;
 	}
 
