@@ -59,12 +59,12 @@ void SurvHacks_Test(SrvData *data, Vec *playerPos) {
 			}
 		}
 
-		if(data->freeFall && DistanceXZ(playerPos, &data->fallStart) > 10)
+		if(data->freeFall && DistanceXZ(playerPos, &data->fallStart) > 4)
 			data->hackScore += 4;
 
 		data->lastPos = *playerPos;
 	}
 
 	if(data->hackScore > 10)
-		Client_Kick(data->client, "Hacked client detected");
+		Client_Kick(data->client, SURV_HACKS_MESSAGE);
 }

@@ -133,7 +133,7 @@ static cs_bool Survival_OnBlockPlace(void *param) {
 	SrvData *data = SurvData_Get(a->client);
 	if(!data || data->godMode) return true;
 	if(a->mode != SETBLOCK_MODE_CREATE && !data->breakStarted) {
-		Client_Kick(a->client, "Hacked client detected.");
+		Client_Kick(a->client, SURV_HACKS_MESSAGE);
 		return false;
 	} else if(a->mode == SETBLOCK_MODE_DESTROY) return true;
 
@@ -193,7 +193,8 @@ static void Survival_OnMove(void *param) {
 			if(!data->freeFall) {
 				data->fallStart = ppos;
 				data->freeFall = true;
-			} else if(ppos.y - data->fallStart.y > 3.0f) {
+				data->hackScore = 0;
+			} else if(ppos.y - data->fallStart.y > 2.0f) {
 				data->fallStart.y = ppos.y;
 				data->hackScore += 6;
 			}
@@ -206,6 +207,7 @@ static void Survival_OnMove(void *param) {
 			if(data->freeFall) {
 				falldamage = (data->fallStart.y - ppos.y) / 22.0f;
 				data->freeFall = false;
+				data->hackScore = 0;
 				if(falldamage > 0.19f && Client_GetFluidLevel(client, NULL) < 1)
 					SurvDmg_Hurt(data, NULL, (cs_byte)(falldamage * SURV_MAX_HEALTH));
 			}
@@ -294,7 +296,7 @@ static void Survival_OnClick(void *param) {
 
 	return;
 	hackdetected:
-	Client_Kick(a->client, "Click hack detected!");
+	Client_Kick(a->client, SURV_HACKS_MESSAGE);
 }
 
 Event_DeclareBunch (events) {
