@@ -90,13 +90,10 @@ cs_bool SurvFS_SavePlayerData(SrvData *data) {
 	cs_char filepath[FILENAME_MAX], tmppath[FILENAME_MAX];
 	if(GetFilePathFor(data->client, filepath, FILENAME_MAX)) {
 		String_Copy(tmppath, FILENAME_MAX, filepath);
-		cs_char *ext = String_FindSubstr(tmppath, ".dat");
-		if(ext) {
-			String_Copy(ext, 5, ".tmp");
-			cs_file handle = File_Open(tmppath, "wb");
-			if(WritePlayerData(data, handle))
-				return File_Rename(tmppath, filepath);
-		}
+		String_Append(tmppath, FILENAME_MAX, ".tmp");
+		cs_file handle = File_Open(tmppath, "wb");
+		if(WritePlayerData(data, handle))
+			return File_Rename(tmppath, filepath);
 	}
 
 	return false;
