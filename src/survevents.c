@@ -15,6 +15,7 @@
 #include "survdmg.h"
 #include "survbrk.h"
 #include "survfs.h"
+#include "survcraft.h"
 
 static cs_bool Survival_OnHandshake(void *param) {
 	onHandshakeDone *a = (onHandshakeDone *)param;
@@ -128,32 +129,32 @@ static void PlaceTree(cs_int16 treeHeight, World *world, SVec pos) {
 	Block_BulkUpdateSend(&bbu);
 }
 
-static cs_bool Survival_OnBlockPlace(void *param) {
-	onBlockPlace *a = (onBlockPlace *)param;
-	SrvData *data = SurvData_Get(a->client);
+static cs_bool Survival_OnBlockPlace(onBlockPlace *obj) {
+	if(!SurvCraft_OnBlockPlace(obj)) return false;
+	SrvData *data = SurvData_Get(obj->client);
 	if(!data || data->godMode) return true;
-	if(a->mode != SETBLOCK_MODE_CREATE && !data->breakStarted) {
-		Client_Kick(a->client, SURV_HACKS_MESSAGE);
+	if(obj->mode != SETBLOCK_MODE_CREATE && !data->breakStarted) {
+		Client_Kick(obj->client, SURV_HACKS_MESSAGE);
 		return false;
-	} else if(a->mode == SETBLOCK_MODE_DESTROY) return true;
+	} else if(obj->mode == SETBLOCK_MODE_DESTROY) return true;
 
-	World *world = Client_GetWorld(a->client);
+	World *world = Client_GetWorld(obj->client);
 
-	if(a->id == BLOCK_SAPLING) {
-		SVec under = a->pos;
+	if(obj->id == BLOCK_SAPLING) {
+		SVec under = obj->pos;
 		under.y -= 1;
 		BlockID ublock = World_GetBlock(world, &under);
 		if(ublock < BLOCK_GRASS || ublock > BLOCK_DIRT)
 			return false;
 	}
 
-	if(SurvInv_Take(data, a->id, 1)) {
+	if(SurvInv_Take(data, obj->id, 1)) {
 		SurvGui_DrawBlockInfo(data,
-			SurvInv_Get(data, a->id) > 0 ? a->id : BLOCK_AIR
+			SurvInv_Get(data, obj->id) > 0 ? obj->id : BLOCK_AIR
 		);
-		if(a->id == BLOCK_SAPLING) {
+		if(obj->id == BLOCK_SAPLING) {
 			cs_int16 treeHeight = (cs_int16)Random_Range(&data->rnd, 4, 6);
-			PlaceTree(treeHeight, world, a->pos);
+			PlaceTree(treeHeight, world, obj->pos);
 			return false;
 		}
 		return true;
@@ -162,19 +163,18 @@ static cs_bool Survival_OnBlockPlace(void *param) {
 	return false;
 }
 
-static void Survival_OnHeldChange(void *param) {
-	onHeldBlockChange *a = (onHeldBlockChange *)param;
-	SrvData *data = SurvData_Get(a->client);
+static void Survival_OnHeldChange(onHeldBlockChange *obj) {
+	SurvCraft_OnHeldChange(obj);
+	SrvData *data = SurvData_Get(obj->client);
 	if(data && !data->godMode)
-		SurvGui_DrawBlockInfo(data, a->curr);
+		SurvGui_DrawBlockInfo(data, obj->curr);
 }
 
-static void Survival_OnTick(void *param) {
-	cs_int32 delta = *(cs_int32 *)param;
+static void Survival_OnTick(cs_int32 *obj) {
 	for(ClientID i = 0; i < MAX_CLIENTS; i++) {
 		SrvData *data = SurvData_GetByID(i);
 		if(data && Client_CheckState(data->client, CLIENT_STATE_INGAME))
-			if(data->breakStarted) SurvBrk_Tick(data, delta);
+			if(data->breakStarted) SurvBrk_Tick(data, *obj);
 	}
 }
 
@@ -301,14 +301,15 @@ static void Survival_OnClick(void *param) {
 
 Event_DeclareBunch (events) {
 	EVENT_BUNCH_ADD('v', EVT_ONTICK, Survival_OnTick)
+	EVENT_BUNCH_ADD('b', EVT_ONHANDSHAKEDONE, Survival_OnHandshake)
+	EVENT_BUNCH_ADD('b', EVT_ONMESSAGE, SurvCraft_OnMessage)
+	EVENT_BUNCH_ADD('v', EVT_ONDISCONNECT, SurvData_Free)
 	EVENT_BUNCH_ADD('v', EVT_ONSPAWN, Survival_OnSpawn)
 	EVENT_BUNCH_ADD('v', EVT_ONDESPAWN, Survival_OnDespawn)
 	EVENT_BUNCH_ADD('v', EVT_ONHELDBLOCKCHNG, Survival_OnHeldChange)
 	EVENT_BUNCH_ADD('b', EVT_ONBLOCKPLACE, Survival_OnBlockPlace)
-	EVENT_BUNCH_ADD('v', EVT_ONMOVE, Survival_OnMove)
-	EVENT_BUNCH_ADD('v', EVT_ONDISCONNECT, SurvData_Free)
-	EVENT_BUNCH_ADD('b', EVT_ONHANDSHAKEDONE, Survival_OnHandshake)
 	EVENT_BUNCH_ADD('v', EVT_ONCLICK, Survival_OnClick)
+	EVENT_BUNCH_ADD('v', EVT_ONMOVE, Survival_OnMove)
 
 	EVENT_BUNCH_END
 };
