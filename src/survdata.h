@@ -13,7 +13,7 @@ typedef struct _SrvData {
 	Client *client;
 	RNGState rnd;
 	cs_uint64 lastHit;
-	cs_char lastWorld[65];
+	cs_char lastWorld[MAX_STR_LEN];
 	cs_uint16 inventory[256];
 	SVec lastClick;
 	Ang lastAng;

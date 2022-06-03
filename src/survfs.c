@@ -14,8 +14,8 @@ void SurvFS_Init(void) {
 }
 
 INL static cs_bool GetFilePathFor(Client *client, cs_char *path, cs_size len) {
-	cs_char sanpname[65];
-	if(String_Copy(sanpname, 65, Client_GetName(client)) > 0) {
+	cs_char sanpname[MAX_STR_LEN];
+	if(String_Copy(sanpname, MAX_STR_LEN, Client_GetName(client)) > 0) {
 		for(cs_byte i = 0; i < 65; i++) {
 			cs_char cc = sanpname[i];
 			if(cc == '\0') break;

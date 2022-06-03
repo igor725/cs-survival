@@ -62,13 +62,13 @@ void SurvGui_DrawBreakProgress(SrvData *data) {
 }
 
 void SurvGui_DrawBlockInfo(SrvData *data, BlockID id) {
-	char blockinfo[65] = {0};
+	char blockinfo[MAX_STR_LEN] = {0};
 
 	if(id > BLOCK_AIR) {
 		World *world = Client_GetWorld(data->client);
 		const char *bn = Block_GetName(world, id);
 		cs_uint16 bc = SurvInv_Get(data, id);
-		String_FormatBuf(blockinfo, 65, "%s (%d)", bn, bc);
+		String_FormatBuf(blockinfo, MAX_STR_LEN, "%s (%d)", bn, bc);
 	}
 
 	Client_Chat(data->client, MESSAGE_TYPE_BRIGHT1, blockinfo);

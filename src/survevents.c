@@ -52,7 +52,7 @@ static void Survival_OnSpawn(void *param) {
 			*a->position = data->lastPos;
 			*a->angle = data->lastAng;
 		} else
-			String_Copy(data->lastWorld, 65, wname);
+			String_Copy(data->lastWorld, MAX_STR_LEN, wname);
 		SurvGui_DrawAll(data);
 		SurvHacks_Update(data);
 		SurvInv_Init(data);
