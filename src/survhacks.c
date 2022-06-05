@@ -53,13 +53,13 @@ void SurvHacks_Test(SrvData *data, Vec *playerPos) {
 		for(cs_uint32 i = 0; i < 3; i++) {
 			cs_float tmp = ppt[i] - lpt[i];
 			if(tmp < 0 && i != 1) tmp *= -1;
-			if(tmp > 1.5f) {
+			if(tmp > (1.5f + data->pingBlocks)) {
 				data->hackScore += 1;
 				break;
 			}
 		}
 
-		if(data->freeFall && DistanceXZ(playerPos, &data->fallStart) > 4)
+		if(data->freeFall && DistanceXZ(playerPos, &data->fallStart) > (4 + data->pingBlocks))
 			data->hackScore += 4;
 
 		data->lastPos = *playerPos;

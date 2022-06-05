@@ -22,6 +22,8 @@ typedef struct _SrvData {
 	cs_bool craftMode;
 	cs_bool craftHelp;
 	cs_bool freeFall;
+	cs_bool pingWarned;
+	cs_float pingBlocks;
 	Vec fallStart;
 	cs_byte health, oxygen, hackScore;
 	cs_bool showOxygen, godMode, pvpMode;

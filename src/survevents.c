@@ -178,23 +178,22 @@ static void Survival_OnTick(cs_int32 *obj) {
 	}
 }
 
-static void Survival_OnMove(void *param) {
-	Client *client = (Client *)param;
-	if(Client_IsOP(client)) return;
-	SrvData *data = SurvData_Get(client);
+static void Survival_OnMove(Client *obj) {
+	if(Client_IsOP(obj)) return;
+	SrvData *data = SurvData_Get(obj);
 	if(!data || data->godMode) return;
 
 	Vec ppos; Ang pang;
 	cs_float falldamage;
-	Client_GetPosition(client, &ppos, &pang);
+	Client_GetPosition(obj, &ppos, &pang);
 	SurvHacks_Test(data, &ppos);
-	switch(Client_GetStandBlock(client)) {
+	switch(Client_GetStandBlock(obj)) {
 		case BLOCK_AIR:
 			if(!data->freeFall) {
 				data->fallStart = ppos;
 				data->freeFall = true;
 				data->hackScore = 0;
-			} else if(ppos.y - data->fallStart.y > 2.0f) {
+			} else if(ppos.y - data->fallStart.y > (2.0f + data->pingBlocks)) {
 				data->fallStart.y = ppos.y;
 				data->hackScore += 6;
 			}
@@ -208,33 +207,46 @@ static void Survival_OnMove(void *param) {
 				falldamage = (data->fallStart.y - ppos.y) / 22.0f;
 				data->freeFall = false;
 				data->hackScore = 0;
-				if(falldamage > 0.19f && Client_GetFluidLevel(client, NULL) < 1)
+				if(falldamage > 0.19f && Client_GetFluidLevel(obj, NULL) < 1)
 					SurvDmg_Hurt(data, NULL, (cs_byte)(falldamage * SURV_MAX_HEALTH));
 			}
 			break;
 	}
 }
 
-static void Survival_OnClick(void *param) {
-	onPlayerClick *a = (onPlayerClick *)param;
-	if(a->button != 0) return;
+static void Survival_OnPing(Client *obj) {
+	SrvData *data = SurvData_Get(obj);
+	if(!data || data->godMode) return;
+	cs_float ping = Client_GetAvgPing(obj);
+	data->pingBlocks = ping / 120.0f;
+	if(ping > 200.0f && !data->pingWarned) {
+		Client_Chat(obj, MESSAGE_TYPE_CHAT,
+			"&cYour ping is almost unplayable!\r\n"
+			"Some actions will take longer than expected."
+		);
+		data->pingWarned = true;
+	}
+}
 
-	SrvData *data = SurvData_Get(a->client);
+static void Survival_OnClick(onPlayerClick *obj) {
+	if(obj->button != 0) return;
+
+	SrvData *data = SurvData_Get(obj->client);
 	if(!data || data->godMode) return;
 
-	if(a->action == 1) {
+	if(obj->action == 1) {
 		SurvBrk_Stop(data);
 		return;
 	}
 
 	Vec playerpos;
-	Client_GetPosition(a->client, &playerpos, NULL);
+	Client_GetPosition(obj->client, &playerpos, NULL);
 
 	Vec knockback = {0.0f, 0.0f, 0.0f};
-	SVec *blockPos = &a->tgpos;
-	Client *target = Client_GetByID(a->tgid);
+	SVec *blockPos = &obj->tgpos;
+	Client *target = Client_GetByID(obj->tgid);
 	SrvData *dataTg = NULL;
-	cs_float dist_max = Client_GetClickDistanceInBlocks(a->client);
+	cs_float dist_max = Client_GetClickDistanceInBlocks(obj->client);
 
 	cs_float dist_entity = 32768.0f;
 	cs_float dist_block = 32768.0f;
@@ -266,7 +278,7 @@ static void Survival_OnClick(void *param) {
 
 	if(dist_block < dist_entity && dist_block < dist_max) {
 		if(!data->breakStarted) {
-			BlockID bid = World_GetBlock(Client_GetWorld(a->client), blockPos);
+			BlockID bid = World_GetBlock(Client_GetWorld(obj->client), blockPos);
 			if(bid > BLOCK_AIR) SurvBrk_Start(data, bid);
 		}
 		data->lastClick = *blockPos;
@@ -285,18 +297,18 @@ static void Survival_OnClick(void *param) {
 				SurvDmg_Hurt(dataTg, data, 1);
 				Client_SetVelocity(target, &knockback, PVC_ADDALL);
 			} else
-				Client_Chat(a->client, MESSAGE_TYPE_CHAT, "&cYou cannot hit a player in god mode!");
+				Client_Chat(obj->client, MESSAGE_TYPE_CHAT, "&cYou cannot hit a player in god mode!");
 		} else {
 			if(!data->pvpMode)
-				Client_Chat(a->client, MESSAGE_TYPE_CHAT, "&cEnable PvP mode (/pvp) first!");
+				Client_Chat(obj->client, MESSAGE_TYPE_CHAT, "&cEnable PvP mode (/pvp) first!");
 			else
-				Client_Chat(a->client, MESSAGE_TYPE_CHAT, "&cThis player is not in PvP mode!");
+				Client_Chat(obj->client, MESSAGE_TYPE_CHAT, "&cThis player is not in PvP mode!");
 		}
 	}
 
 	return;
 	hackdetected:
-	Client_Kick(a->client, SURV_HACKS_MESSAGE);
+	Client_Kick(obj->client, SURV_HACKS_MESSAGE);
 }
 
 Event_DeclareBunch (events) {
@@ -310,6 +322,7 @@ Event_DeclareBunch (events) {
 	EVENT_BUNCH_ADD('b', EVT_ONBLOCKPLACE, Survival_OnBlockPlace)
 	EVENT_BUNCH_ADD('v', EVT_ONCLICK, Survival_OnClick)
 	EVENT_BUNCH_ADD('v', EVT_ONMOVE, Survival_OnMove)
+	EVENT_BUNCH_ADD('v', EVT_ONPING, Survival_OnPing)
 
 	EVENT_BUNCH_END
 };

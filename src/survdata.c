@@ -20,6 +20,7 @@ SrvData *SurvData_Create(Client *client) {
 		data->oxygen = SURV_MAX_OXYGEN;
 		data->craftHelp = true;
 		data->client = client;
+		data->pingBlocks = 2;
 		return data;
 	}
 
