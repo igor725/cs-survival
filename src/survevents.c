@@ -312,17 +312,17 @@ static void Survival_OnClick(onPlayerClick *obj) {
 }
 
 Event_DeclareBunch (events) {
-	EVENT_BUNCH_ADD('v', EVT_ONTICK, Survival_OnTick)
-	EVENT_BUNCH_ADD('b', EVT_ONHANDSHAKEDONE, Survival_OnHandshake)
-	EVENT_BUNCH_ADD('b', EVT_ONMESSAGE, SurvCraft_OnMessage)
-	EVENT_BUNCH_ADD('v', EVT_ONDISCONNECT, SurvData_Free)
-	EVENT_BUNCH_ADD('v', EVT_ONSPAWN, Survival_OnSpawn)
-	EVENT_BUNCH_ADD('v', EVT_ONDESPAWN, Survival_OnDespawn)
-	EVENT_BUNCH_ADD('v', EVT_ONHELDBLOCKCHNG, Survival_OnHeldChange)
-	EVENT_BUNCH_ADD('b', EVT_ONBLOCKPLACE, Survival_OnBlockPlace)
-	EVENT_BUNCH_ADD('v', EVT_ONCLICK, Survival_OnClick)
-	EVENT_BUNCH_ADD('v', EVT_ONMOVE, Survival_OnMove)
-	EVENT_BUNCH_ADD('v', EVT_ONPING, Survival_OnPing)
+	EVENT_BUNCH_ADD('v', EVT_ONTICK, Survival_OnTick),
+	EVENT_BUNCH_ADD('b', EVT_ONHANDSHAKEDONE, Survival_OnHandshake),
+	EVENT_BUNCH_ADD('b', EVT_ONMESSAGE, SurvCraft_OnMessage),
+	EVENT_BUNCH_ADD('v', EVT_ONDISCONNECT, SurvData_Free),
+	EVENT_BUNCH_ADD('v', EVT_ONSPAWN, Survival_OnSpawn),
+	EVENT_BUNCH_ADD('v', EVT_ONDESPAWN, Survival_OnDespawn),
+	EVENT_BUNCH_ADD('v', EVT_ONHELDBLOCKCHNG, Survival_OnHeldChange),
+	EVENT_BUNCH_ADD('b', EVT_ONBLOCKPLACE, Survival_OnBlockPlace),
+	EVENT_BUNCH_ADD('v', EVT_ONCLICK, Survival_OnClick),
+	EVENT_BUNCH_ADD('v', EVT_ONMOVE, Survival_OnMove),
+	EVENT_BUNCH_ADD('v', EVT_ONPING, Survival_OnPing),
 
 	EVENT_BUNCH_END
 };
