@@ -295,7 +295,7 @@ static void Survival_OnClick(onPlayerClick *obj) {
 				data->lastHit = ctime;
 				dataTg->hackScore = 0;
 				SurvDmg_Hurt(dataTg, data, 1);
-				Client_SetVelocity(target, &knockback, PVC_ADDALL);
+				Client_SetVelocity(target, &knockback, CPE_VELCTL_ADDALL);
 			} else
 				Client_Chat(obj->client, MESSAGE_TYPE_CHAT, "&cYou cannot hit a player in god mode!");
 		} else {
