@@ -12,6 +12,9 @@
 #include "survcraft.h"
 
 Plugin_SetVersion(1);
+#if PLUGIN_API_NUM > 1
+Plugin_SetURL("https://github.com/igor725/cs-survival");
+#endif
 
 static SurvItf SuvivalController = {
 	.getSrvData = SurvData_Get,
@@ -35,7 +38,7 @@ static SurvItf SuvivalController = {
 };
 
 Plugin_DeclareInterfaces {
-	PLUGIN_IFACE_ADD(SURV_ITF_NAME, SuvivalController)
+	PLUGIN_IFACE_ADD(SURV_ITF_NAME, SuvivalController),
 
 	PLUGIN_IFACE_END
 };
